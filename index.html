@@ -194,9 +194,198 @@
 
     .guestbook-wrap{ flex-direction:column; }
   }
+    /* ===== 로딩 화면 ===== */
+  #loading-screen{
+    position:fixed; inset:0; z-index:9999;
+    background:var(--dark);
+    display:flex; align-items:center; justify-content:center;
+    transition:opacity .6s ease, visibility .6s ease;
+  }
+  #loading-screen.hide{
+    opacity:0; visibility:hidden; pointer-events:none;
+  }
+
+  .loading-content{
+    text-align:center;
+    animation:loadingFloat 2s ease-in-out infinite;
+  }
+  @keyframes loadingFloat{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(-8px); }
+  }
+
+  /* --- 폴라로이드 사진 --- */
+  .loading-polaroids{
+    position:relative;
+    height:150px;
+    margin-bottom:20px;
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+  }
+
+  .polaroid{
+    position:absolute;
+    width:90px;
+    background:#fff;
+    padding:8px 8px 20px;
+    border-radius:3px;
+    box-shadow:0 6px 16px rgba(0,0,0,.4);
+    opacity:0;
+    transform:scale(0.3) rotate(0deg) translateY(30px);
+    animation:polaroidPop .6s ease forwards;
+  }
+  .polaroid img{
+    width:100%;
+    height:90px;
+    object-fit:cover;
+    display:block;
+    border:1px solid #eee;
+  }
+
+  .polaroid.p1{
+    left:50%;
+    margin-left:-95px;
+    transform-origin:bottom center;
+    animation-delay:.3s;
+    --final-rot:-12deg;
+  }
+  .polaroid.p2{
+    left:50%;
+    margin-left:-45px;
+    z-index:2;
+    transform-origin:bottom center;
+    animation-delay:.6s;
+    --final-rot:4deg;
+  }
+  .polaroid.p3{
+    left:50%;
+    margin-left:5px;
+    transform-origin:bottom center;
+    animation-delay:.9s;
+    --final-rot:14deg;
+  }
+
+  @keyframes polaroidPop{
+    0%{
+      opacity:0;
+      transform:scale(0.3) rotate(0deg) translateY(30px);
+    }
+    60%{
+      opacity:1;
+      transform:scale(1.1) rotate(var(--final-rot)) translateY(-5px);
+    }
+    100%{
+      opacity:1;
+      transform:scale(1) rotate(var(--final-rot)) translateY(0);
+    }
+  }
+
+  /* --- A/B 버튼 --- */
+  .loading-console{ margin-bottom:24px; }
+  .loading-btn{
+    display:inline-block; width:36px; height:36px; border-radius:50%;
+    color:#fff; font-family:'Press Start 2P'; font-size:.85rem;
+    line-height:36px; margin:0 8px; box-shadow:0 3px 0 rgba(0,0,0,.4);
+    animation:btnPulse 1s ease-in-out infinite;
+  }
+  .loading-btn.a{ background:var(--red); animation-delay:0s; }
+  .loading-btn.b{ background:var(--blue); animation-delay:.5s; }
+  @keyframes btnPulse{
+    0%,100%{ transform:scale(1); }
+    50%{ transform:scale(1.2); }
+  }
+
+  /* --- 타이틀 --- */
+  .loading-title{
+    font-family:'Press Start 2P';
+    font-size:1.3rem; color:#fff;
+    line-height:1.8; margin-bottom:30px;
+    text-shadow:3px 3px 0 var(--red);
+  }
+
+  /* --- 로딩 바 --- */
+  .loading-bar-wrap{
+    width:280px; max-width:70vw; height:20px;
+    background:#333; border:3px solid #fff; border-radius:10px;
+    margin:0 auto 14px; overflow:hidden;
+    position:relative;
+  }
+  .loading-bar{
+    width:0%; height:100%;
+    background:linear-gradient(90deg, var(--red), var(--blue));
+    transition:width .1s linear;
+    position:relative;
+  }
+  .loading-bar::after{
+    content:'';
+    position:absolute; inset:0;
+    background:repeating-linear-gradient(
+      45deg, rgba(255,255,255,.15) 0 8px,
+      transparent 8px 16px
+    );
+    animation:stripeMove 1s linear infinite;
+  }
+  @keyframes stripeMove{
+    0%{ background-position:0 0; }
+    100%{ background-position:32px 0; }
+  }
+
+  .loading-text{
+    font-family:'Press Start 2P'; font-size:.7rem;
+    color:#fff; margin-bottom:20px;
+  }
+
+  .loading-blink{
+    font-family:'Press Start 2P'; font-size:.65rem;
+    color:#aaa; animation:blink 1s step-end infinite;
+  }
+
+  /* --- 반응형 --- */
+  @media(max-width:900px){
+    .loading-title{ font-size:1rem; }
+    .loading-bar-wrap{ width:220px; }
+    .loading-polaroids{ height:110px; }
+    .polaroid{ width:65px; padding:6px 6px 14px; }
+    .polaroid img{ height:65px; }
+    .polaroid.p1{ margin-left:-68px; }
+    .polaroid.p2{ margin-left:-32px; }
+    .polaroid.p3{ margin-left:4px; }
+  }
 </style>
 </head>
 <body>
+  <body>
+
+  <!-- ===== 로딩 화면 ===== -->
+  <div id="loading-screen">
+    <div class="loading-content">
+
+      <!-- 폴라로이드 사진 3장 -->
+      <div class="loading-polaroids">
+        <div class="polaroid p1">
+          <img src="6.png" alt="폴라로이드1">
+        </div>
+        <div class="polaroid p2">
+          <img src="7.png" alt="폴라로이드2">
+        </div>
+        <div class="polaroid p3">
+          <img src="8.png" alt="폴라로이드3">
+        </div>
+      </div>
+
+      <div class="loading-console">
+        <span class="loading-btn a">A</span>
+        <span class="loading-btn b">B</span>
+      </div>
+      <h2 class="loading-title">HARANG'S<br>BIRTHDAY</h2>
+      <div class="loading-bar-wrap">
+        <div class="loading-bar" id="loading-bar"></div>
+      </div>
+      <p class="loading-text" id="loading-percent">LOADING... 0%</p>
+      <p class="loading-blink">PRESS START</p>
+    </div>
+  </div>
 
   <!-- ===== 떠오르는 배경 장식 ===== -->
   <div class="floating-decorations" aria-hidden="true">
@@ -420,6 +609,39 @@
       alert('비밀번호가 올바르지 않습니다.');
     }
   });
+    /* ============================================
+     ⏳ 로딩 화면 (5초)
+     ============================================ */
+  (function(){
+    const loadingScreen = document.getElementById('loading-screen');
+    const loadingBar = document.getElementById('loading-bar');
+    const loadingPercent = document.getElementById('loading-percent');
+
+    const duration = 5000; // 5초
+    const startTime = Date.now();
+
+    function tick(){
+      const elapsed = Date.now() - startTime;
+      const percent = Math.min(100, Math.floor((elapsed / duration) * 100));
+
+      loadingBar.style.width = percent + '%';
+      loadingPercent.textContent = `LOADING... ${percent}%`;
+
+      if(elapsed < duration){
+        requestAnimationFrame(tick);
+      } else {
+        loadingBar.style.width = '100%';
+        loadingPercent.textContent = 'LOADING... 100%';
+        setTimeout(() => {
+          loadingScreen.classList.add('hide');
+          document.body.style.overflow = 'auto';
+        }, 200);
+      }
+    }
+
+    document.body.style.overflow = 'hidden'; // 로딩 중 스크롤 방지
+    tick();
+  })();
 </script>
 
 </body>
