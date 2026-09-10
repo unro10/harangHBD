@@ -146,7 +146,7 @@
     border:2px solid #ddd; border-radius:8px; font-family:inherit; font-size:.95rem;
     resize:vertical;
   }
-  .guestbook-write textarea{ min-height:100px; }
+  .guestbook-write textarea{ min-height:180px; }
   .guestbook-write button{
     width:100%; padding:12px; border:none; border-radius:8px;
     background:var(--blue); color:#fff; font-weight:700; font-size:1rem;
@@ -466,7 +466,7 @@
       <div class="guestbook-write">
         <h3>편지 쓰기</h3>
         <input type="text" id="gb-name" placeholder="이름" maxlength="20">
-        <textarea id="gb-msg" placeholder="하랑이에게 축하 메시지를 남겨주세요!" maxlength="300"></textarea>
+        <textarea id="gb-msg" placeholder="하랑이에게 축하 메시지를 남겨주세요!" maxlength="2000"></textarea>
         <button id="gb-submit">편지 남기기 💌</button>
       </div>
       <div class="guestbook-list" id="gb-list">
