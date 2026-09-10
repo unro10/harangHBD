@@ -352,6 +352,18 @@
     .polaroid.p2{ margin-left:-32px; }
     .polaroid.p3{ margin-left:4px; }
   }
+  .music-btn{
+  cursor:pointer;
+  user-select:none;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.music-btn:active{
+  transform:scale(0.9);
+}
+.music-btn.active{
+  box-shadow:0 0 0 3px #fff, 0 3px 0 rgba(0,0,0,.3);
+  transform:scale(1.1);
+}
 </style>
 </head>
 <body>
@@ -375,10 +387,10 @@
         </div>
       </div>
 
-      <div class="loading-console">
-        <span class="loading-btn a">A</span>
-        <span class="loading-btn b">B</span>
-      </div>
+  <div class="loading-console">
+    <span class="loading-btn a music-btn" id="loading-btn-a" data-action="play">▶️</span>
+    <span class="loading-btn b music-btn" id="loading-btn-b" data-action="pause">⏸️</span>
+  </div>
       <h2 class="loading-title">HARANG'S<br>BIRTHDAY</h2>
       <div class="loading-bar-wrap">
         <div class="loading-bar" id="loading-bar"></div>
@@ -403,7 +415,8 @@
   <!-- ===== 헤더 ===== -->
   <header>
     <div class="console-buttons">
-      <span class="btn-a">A</span><span class="btn-b">B</span>
+      <span class="btn-a music-btn" id="header-btn-a" data-action="play">▶️</span>
+      <span class="btn-b music-btn" id="header-btn-b" data-action="pause">⏸️</span>
     </div>
     <h1>🎮 HAPPY BIRTHDAY HARANG 🎮</h1>
   </header>
@@ -643,6 +656,39 @@
     document.body.style.overflow = 'hidden'; // 로딩 중 스크롤 방지
     tick();
   })();
+  /* ============================================
+   🎵 A/B 버튼 음악 컨트롤
+   ============================================ */
+(function(){
+  const bgm = document.getElementById('bgm');
+  const playButtons = document.querySelectorAll('[data-action="play"]');
+  const pauseButtons = document.querySelectorAll('[data-action="pause"]');
+
+  function setActiveState(playing){
+    playButtons.forEach(btn => btn.classList.toggle('active', playing));
+    pauseButtons.forEach(btn => btn.classList.toggle('active', !playing));
+  }
+
+  function playMusic(){
+    bgm.play().then(() => {
+      setActiveState(true);
+    }).catch(err => {
+      console.log('재생 실패:', err);
+    });
+  }
+
+  function pauseMusic(){
+    bgm.pause();
+    setActiveState(false);
+  }
+
+  playButtons.forEach(btn => {
+    btn.addEventListener('click', playMusic);
+  });
+  pauseButtons.forEach(btn => {
+    btn.addEventListener('click', pauseMusic);
+  });
+})();
 </script>
 
 </body>
