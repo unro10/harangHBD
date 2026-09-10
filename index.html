@@ -3,864 +3,452 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>SYUSYU Birthday</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Great+Vibes&display=swap" rel="stylesheet">
-
+<title>HAPPY BIRTHDAY HARANG</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    background:
-        linear-gradient(rgba(255,245,248,0.92), rgba(255,240,245,0.92)),
-        url("https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1400&auto=format&fit=crop");
-
-    background-size:cover;
-    background-attachment:fixed;
-    color:#6d4053;
-    font-family:'Cinzel', serif;
+  :root{
+    --white:#ffffff;
+    --red:#ff4d4d;
+    --blue:#4361ee;
+    --dark:#1a1a2e;
+    --gray:#666;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Noto Sans KR', sans-serif;
+    background:var(--white);
+    color:var(--dark);
     overflow-x:hidden;
-}
-
-/* 프레임 */
-
-.frame{
-    width:92%;
-    max-width:1300px;
-    margin:30px auto;
-    background:rgba(255,255,255,0.78);
-    border:8px double #f4b6c8;
-    border-radius:35px;
-    padding:50px;
     position:relative;
+  }
 
-    box-shadow:
-      0 0 30px rgba(255,182,193,0.35),
-      inset 0 0 20px rgba(255,255,255,0.8);
-}
+  /* ===== 1. 떠오르는 배경 장식 ===== */
+  .floating-decorations{
+    position:fixed; inset:0; overflow:hidden; z-index:0; pointer-events:none;
+  }
+  .floating-decorations span{
+    position:absolute; bottom:-10%; opacity:0;
+    animation-name:floatUp; animation-timing-function:linear; animation-iteration-count:infinite;
+    filter:drop-shadow(0 0 6px rgba(0,0,0,.1));
+  }
+  @keyframes floatUp{
+    0%{ transform:translateY(0) rotate(0deg); opacity:0; }
+    10%{ opacity:.55; }
+    50%{ transform:translateY(-60vh) rotate(180deg); opacity:.85; }
+    90%{ opacity:.25; }
+    100%{ transform:translateY(-130vh) rotate(360deg); opacity:0; }
+  }
 
-/* 상단 */
+  section, header, footer{
+    position:relative; z-index:1;
+    background:rgba(255,255,255,0.92);
+  }
 
-.top-decoration{
-    text-align:center;
-    font-size:42px;
-    margin-bottom:15px;
-    color:#f08dac;
-}
+  /* ===== 헤더 ===== */
+  header{ text-align:center; padding:70px 20px 40px; }
+  .console-buttons{ margin-bottom:20px; }
+  .console-buttons span{
+    display:inline-block; width:34px; height:34px; border-radius:50%;
+    color:#fff; font-family:'Press Start 2P'; font-size:.8rem;
+    line-height:34px; margin:0 6px; box-shadow:0 3px 0 rgba(0,0,0,.3);
+  }
+  .btn-a{ background:var(--red); }
+  .btn-b{ background:var(--blue); }
 
-/* 제목 */
+  h1{
+    font-family:'Press Start 2P', sans-serif;
+    font-size:2rem;
+    color:var(--blue);
+    text-shadow:3px 3px 0 var(--red);
+    line-height:1.4;
+  }
+  .subtitle{
+    margin-top:16px; font-family:'Press Start 2P';
+    font-size:.8rem; color:var(--dark);
+    animation:blink 1.2s step-end infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
 
-.title{
-    text-align:center;
-}
+  .section-title{
+    text-align:center; font-family:'Press Start 2P';
+    font-size:1.2rem; color:var(--dark); margin-bottom:30px;
+    padding-top:10px;
+  }
 
-.title h1{
-    font-family:'Great Vibes', cursive;
-    font-size:92px;
-    color:#e77aa0;
-    text-shadow:0 0 15px rgba(255,182,193,0.4);
-}
+  /* ===== 2. 카운트다운 ===== */
+  #countdown-section{ padding:40px 20px 60px; text-align:center; }
+  .countdown-numbers{
+    display:flex; justify-content:center; align-items:center;
+    gap:10px; flex-wrap:wrap;
+  }
+  .cd-box{
+    background:#111; border-radius:10px; padding:16px 14px;
+    min-width:80px; text-align:center;
+  }
+  .cd-box.red{ border:3px solid var(--red); box-shadow:0 0 18px rgba(255,77,77,.4); }
+  .cd-box.blue{ border:3px solid var(--blue); box-shadow:0 0 18px rgba(67,97,238,.4); }
+  .cd-box span{
+    display:block; font-family:'Press Start 2P'; font-size:1.8rem; color:#fff;
+  }
+  .cd-box label{
+    display:block; margin-top:6px; font-size:.65rem; color:#aaa; letter-spacing:1px;
+  }
+  .cd-sep{ font-family:'Press Start 2P'; font-size:1.6rem; color:var(--dark); }
 
-.title p{
-    font-size:24px;
-    letter-spacing:4px;
-    margin-top:10px;
-}
+  #countdown-title.celebrate{
+    color:var(--red); animation:pulse 1s infinite; font-size:1.5rem;
+  }
+  @keyframes pulse{ 50%{ transform:scale(1.08); } }
 
-/* 날짜 */
+  /* ===== 3. 앨범(엽서 느낌) ===== */
+  #album-section{ padding:40px 20px 100px; }
+  .album{
+    position:relative; max-width:900px; height:650px; margin:0 auto;
+  }
+  .card{
+    position:absolute; width:220px; background:#fff;
+    padding:12px 12px 34px; border-radius:4px;
+    box-shadow:0 8px 18px rgba(0,0,0,.18);
+    transform:rotate(var(--rot));
+    transition:transform .35s ease, box-shadow .35s ease, z-index 0s;
+    cursor:pointer; text-decoration:none; color:var(--dark); display:block;
+  }
+  .card img{ width:100%; display:block; border:2px solid #f2f2f2; }
+  .card .caption{
+    margin-top:10px; text-align:center; font-size:.85rem; color:var(--gray);
+  }
+  .card:hover{
+    transform:rotate(0deg) scale(1.15);
+    box-shadow:0 16px 30px rgba(0,0,0,.28);
+    z-index:20;
+  }
+  .ribbon{
+    position:absolute; top:-14px; left:50%;
+    width:64px; height:22px; border-radius:3px;
+    transform:translateX(-50%) rotate(-3deg);
+    box-shadow:0 3px 6px rgba(0,0,0,.25);
+  }
+  .ribbon.r{ background:var(--red); }
+  .ribbon.b{ background:var(--blue); }
 
-.date{
-    text-align:center;
-    margin-top:18px;
-    color:#b36a84;
-    font-size:18px;
-}
+  /* ===== 4. 방명록 ===== */
+  #guestbook{ padding:40px 20px 100px; }
+  .guestbook-wrap{
+    display:flex; gap:30px; max-width:1000px; margin:0 auto;
+  }
+  .guestbook-write, .guestbook-list{
+    flex:1; background:#fafafa; border-radius:12px; padding:24px;
+    border:2px solid #eee;
+  }
+  .guestbook-write h3{ margin-bottom:14px; }
+  .guestbook-write input, .guestbook-write textarea{
+    width:100%; padding:10px; margin-bottom:12px;
+    border:2px solid #ddd; border-radius:8px; font-family:inherit; font-size:.95rem;
+    resize:vertical;
+  }
+  .guestbook-write textarea{ min-height:100px; }
+  .guestbook-write button{
+    width:100%; padding:12px; border:none; border-radius:8px;
+    background:var(--blue); color:#fff; font-weight:700; font-size:1rem;
+    cursor:pointer; transition:background .2s;
+  }
+  .guestbook-write button:hover{ background:var(--red); }
 
-/* 떠다니는 장식 */
-
-.roses{
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    overflow:hidden;
-    z-index:-1;
-}
-
-.rose{
-    position:absolute;
-    animation:float 10s linear infinite;
-    opacity:0.5;
-    font-size:24px;
-}
-
-@keyframes float{
-
-    0%{
-        transform:translateY(100vh) rotate(0deg);
-        opacity:0;
-    }
-
-    10%{
-        opacity:0.5;
-    }
-
-    100%{
-        transform:translateY(-120vh) rotate(360deg);
-        opacity:0;
-    }
-}
-
-/* 카운트다운 */
-
-.countdown-box{
-    margin-top:45px;
-    background:rgba(255,255,255,0.9);
-    border:2px solid #ffd6e4;
-    border-radius:30px;
-    padding:35px;
-    text-align:center;
-}
-
-.countdown-box h2{
-    color:#df7ca1;
-    margin-bottom:18px;
-    font-size:34px;
-}
-
-#countdown{
-    font-size:38px;
-    color:#b85f82;
-    font-weight:600;
-    letter-spacing:2px;
-}
-
-/* 갤러리 */
-
-.gallery{
-    margin-top:80px;
-
-    display:flex;
-    flex-wrap:wrap;
-
-    justify-content:center;
-    align-items:flex-start;
-
-    gap:60px;
-
+  .guestbook-list{ max-height:520px; overflow-y:auto; }
+  .letter-card{
+    background:#fff; border-radius:10px; padding:14px 16px; margin-bottom:12px;
+    border-left:5px solid var(--red); box-shadow:0 3px 8px rgba(0,0,0,.06);
     position:relative;
-}
-
-/* 엽서 카드 */
-
-.card{
-    width:280px;
-
-    background:#fff9fb;
-
-    border:3px solid #ffd2e0;
-
-    border-radius:24px;
-
-    padding:14px;
-
-    position:relative;
-
-    transition:0.4s;
-
-    box-shadow:
-      0 12px 28px rgba(255,182,193,0.28);
-
-    backdrop-filter:blur(3px);
-}
-
-/* 랜덤 느낌 */
-
-.card:nth-child(1){
-    transform:rotate(-7deg);
-}
-
-.card:nth-child(2){
-    transform:rotate(5deg) translateY(25px);
-}
-
-.card:nth-child(3){
-    transform:rotate(-4deg);
-}
-
-.card:nth-child(4){
-    transform:rotate(6deg) translateY(10px);
-}
-
-.card:nth-child(5){
-    transform:rotate(-5deg);
-}
-
-/* hover */
-
-.card:hover{
-    transform:scale(1.05) rotate(0deg);
-    z-index:5;
-}
-
-/* 리본 */
-
-.card::before{
-    content:"🎀";
-    position:absolute;
-    top:-22px;
-    left:50%;
-    transform:translateX(-50%);
-    font-size:34px;
-}
-
-/* 이미지 */
-
-.card img{
-    width:100%;
-    height:auto;
-    display:block;
-    border-radius:18px;
-    object-fit:contain;
-}
-
-/* 비밀번호 */
-
-.password-box{
-    margin-top:55px;
-    background:rgba(255,255,255,0.9);
-    border:2px solid #ffd6e4;
-    border-radius:30px;
-    padding:40px;
-    text-align:center;
-}
-
-.password-box h2{
-    color:#df7ca1;
-    margin-bottom:15px;
-    font-size:32px;
-}
-
-.password-box p{
-    line-height:1.8;
-    margin-bottom:25px;
-    color:#9b6076;
-}
-
-.password-box input{
-    width:260px;
-    max-width:90%;
-    padding:14px 20px;
-    border:none;
-    border-radius:999px;
-    outline:none;
-    background:#fff8fb;
-    border:2px solid #ffd4e3;
-    font-size:16px;
-    text-align:center;
-    color:#7a4e63;
-    font-family:'Cinzel', serif;
-}
-
-/* 버튼 */
-
-button{
-    margin-top:20px;
-    padding:15px 32px;
-    border:none;
-    border-radius:999px;
-    background:#f6a9c2;
-    color:white;
-    font-size:17px;
-    cursor:pointer;
-    transition:0.3s;
-    font-family:'Cinzel', serif;
-}
-
-button:hover{
-    transform:scale(1.05);
-    background:#eb8fb0;
-}
-
-/* 편지 */
-
-.letter{
-    margin-top:70px;
-    background:rgba(255,250,252,0.9);
-    border:2px dashed #efadc3;
-    border-radius:30px;
-    padding:45px;
-    line-height:2.2;
-    text-align:center;
-    font-size:18px;
-    position:relative;
-}
-
-.letter::before{
-    content:"✧";
-    position:absolute;
-    top:10px;
-    left:20px;
-    font-size:28px;
-    color:#f2a7bf;
-}
-
-.letter::after{
-    content:"✧";
-    position:absolute;
-    bottom:10px;
-    right:20px;
-    font-size:28px;
-    color:#f2a7bf;
-}
-
-/* 방명록 */
-
-.guestbook{
-    margin-top:70px;
-    background:rgba(255,255,255,0.88);
-    border:2px solid #ffd4e3;
-    border-radius:35px;
-    padding:40px;
-}
-
-.guestbook h2{
-    text-align:center;
-    color:#de7ea1;
-    margin-bottom:35px;
-    font-size:36px;
-}
-
-/* 레이아웃 */
-
-.guestbook-container{
-    display:flex;
-    gap:35px;
-}
-
-/* 입력 */
-
-.input-area{
-    flex:1;
-}
-
-/* 전시 */
-
-.messages-area{
-    flex:1.4;
-    background:rgba(255,248,251,0.9);
-    border-radius:28px;
-    padding:25px;
-    border:2px solid #ffd6e4;
-    min-height:420px;
-    overflow-y:auto;
-}
-
-/* 입력창 */
-
-textarea{
-    width:100%;
-    height:320px;
-    border:none;
-    border-radius:25px;
-    padding:25px;
-    resize:none;
-    font-size:17px;
-    background:#fff8fb;
-    color:#7a4e63;
-    outline:none;
-    border:2px solid #ffd4e3;
-    font-family:'Cinzel', serif;
-    line-height:1.8;
-    text-align:center;
-}
-
-/* 편지 카드 */
-
-.message-box{
-    background:white;
-    border-radius:24px;
-    padding:22px;
-    border:2px dashed #ffd4e3;
-    margin-bottom:18px;
-    line-height:2;
-    text-align:center;
-    box-shadow:0 6px 15px rgba(255,182,193,0.15);
-    word-break:break-word;
-}
-
-/* 푸터 */
-
-.footer{
-    text-align:center;
-    margin-top:45px;
-    color:#aa6b84;
-    font-size:14px;
-    letter-spacing:2px;
-}
-
-/* 모바일 */
-
-@media(max-width:900px){
-
-    .frame{
-        width:96%;
-        padding:20px;
-        margin:15px auto;
-    }
-
-    .guestbook-container{
-        flex-direction:column;
-    }
-
-    .messages-area{
-        min-height:260px;
-    }
-
-    textarea{
-        height:220px;
-        font-size:15px;
-    }
-
-    .title h1{
-        font-size:56px;
-        line-height:1;
-    }
-
-    .title p{
-        font-size:18px;
-        letter-spacing:2px;
-    }
-
-    .top-decoration{
-        font-size:24px;
-        line-height:1.5;
-    }
-
-    .date{
-        font-size:15px;
-    }
-
-    #countdown{
-        font-size:24px;
-        line-height:1.5;
-    }
-
-    .countdown-box,
-    .password-box,
-    .guestbook,
-    .letter{
-        padding:24px;
-    }
-
-    .countdown-box h2,
-    .password-box h2,
-    .guestbook h2{
-        font-size:25px;
-    }
-
-    .gallery{
-        gap:22px;
-        margin-top:55px;
-    }
-
+  }
+  .letter-card:nth-child(even){ border-left-color:var(--blue); }
+  .letter-card strong{ display:block; margin-bottom:6px; color:var(--dark); }
+  .letter-card p{ font-size:.9rem; color:#333; white-space:pre-wrap; word-break:break-word; }
+  .letter-date{ display:block; margin-top:8px; font-size:.7rem; color:#aaa; }
+  .del-btn{
+    position:absolute; top:10px; right:10px; background:var(--red); color:#fff;
+    border:none; border-radius:6px; padding:4px 8px; font-size:.7rem; cursor:pointer;
+  }
+  .empty{ text-align:center; color:#aaa; padding:40px 0; }
+
+  /* ===== 푸터 ===== */
+  footer{ text-align:center; padding:30px; color:#999; font-size:.8rem; }
+  .admin-btn{
+    margin-top:10px; background:none; border:1px solid #ccc; border-radius:6px;
+    padding:4px 10px; cursor:pointer; font-size:.8rem; color:#999;
+  }
+
+  /* ===== 5. 반응형 (900px 이하) ===== */
+  @media(max-width:900px){
+    h1{ font-size:1.3rem; }
+    .subtitle{ font-size:.65rem; }
+    .section-title{ font-size:1rem; }
+
+    .cd-box{ min-width:60px; padding:12px 8px; }
+    .cd-box span{ font-size:1.3rem; }
+
+    .album{ position:relative; height:auto; display:flex; flex-direction:column; align-items:center; gap:40px; }
     .card{
-        width:78vw;
-        max-width:320px;
-        min-width:220px;
+      position:relative !important; top:auto !important; left:auto !important;
+      width:70%; max-width:250px;
     }
 
-    /* PC 감성 유지 */
-
-    .card:nth-child(1){
-        transform:rotate(-5deg);
-    }
-
-    .card:nth-child(2){
-        transform:rotate(4deg) translateY(10px);
-    }
-
-    .card:nth-child(3){
-        transform:rotate(-3deg);
-    }
-
-    .card:nth-child(4){
-        transform:rotate(5deg) translateY(8px);
-    }
-
-    .card:nth-child(5){
-        transform:rotate(-4deg);
-    }
-
-    .card:hover{
-        transform:scale(1.03);
-    }
-
-    .card img{
-        width:100%;
-        height:auto;
-        object-fit:contain;
-    }
-
-    .letter{
-        font-size:15px;
-        line-height:2;
-    }
-
-    button{
-        width:100%;
-        font-size:16px;
-        padding:14px 20px;
-    }
-
-    .password-box input{
-        width:100%;
-    }
-
-}
-
+    .guestbook-wrap{ flex-direction:column; }
+  }
 </style>
 </head>
-
 <body>
 
-<div class="roses">
+  <!-- ===== 떠오르는 배경 장식 ===== -->
+  <div class="floating-decorations" aria-hidden="true">
+    <span style="left:5%;  font-size:2.2rem; animation-duration:18s; animation-delay:0s;">🎮</span>
+    <span style="left:18%; font-size:1.8rem; animation-duration:22s; animation-delay:3s;">🐯</span>
+    <span style="left:32%; font-size:2rem;   animation-duration:16s; animation-delay:1s;">🕹️</span>
+    <span style="left:48%; font-size:1.6rem; animation-duration:25s; animation-delay:5s;">⭐</span>
+    <span style="left:62%; font-size:2.4rem; animation-duration:20s; animation-delay:2s;">🎮</span>
+    <span style="left:75%; font-size:1.9rem; animation-duration:19s; animation-delay:4s;">🐯</span>
+    <span style="left:88%; font-size:2rem;   animation-duration:23s; animation-delay:6s;">⭐️</span>
+    <span style="left:10%; font-size:1.7rem; animation-duration:21s; animation-delay:8s;">🕹️</span>
+  </div>
 
-    <div class="rose" style="left:5%; animation-delay:2s;">❤️</div>
-    <div class="rose" style="left:15%; animation-delay:4s;">🩷</div>
-    <div class="rose" style="left:25%; animation-delay:1s;">🤍</div>
-    <div class="rose" style="left:35%; animation-delay:5s;">💖</div>
-    <div class="rose" style="left:45%; animation-delay:3s;">🎀</div>
-
-</div>
-
-<div class="frame">
-
-    <div class="top-decoration">
-       ✧ ♡ ⋆｡˚ 🎀 SYUSYU DAY 🎀 ˚｡⋆ ♡ ✧
+  <!-- ===== 헤더 ===== -->
+  <header>
+    <div class="console-buttons">
+      <span class="btn-a">A</span><span class="btn-b">B</span>
     </div>
+    <h1>🎮 HAPPY BIRTHDAY HARANG 🎮</h1>
+    <p class="subtitle">PRESS START TO CELEBRATE ▶</p>
+  </header>
 
-    <div class="title">
-        <h1>Happy Birthday</h1>
-        <p>SYUSYU</p>
+  <!-- ===== 카운트다운 ===== -->
+  <section id="countdown-section">
+    <h2 id="countdown-title" class="section-title">⏰ HARANG의 생일까지</h2>
+    <div id="countdown-numbers" class="countdown-numbers">
+      <div class="cd-box red"><span id="cd-day">00</span><label>DAYS</label></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-box blue"><span id="cd-hour">00</span><label>HOUR</label></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-box red"><span id="cd-min">00</span><label>MIN</label></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-box blue"><span id="cd-sec">00</span><label>SEC</label></div>
     </div>
+  </section>
 
-    <div class="date">
-        November 16, 2026
+  <!-- ===== 사진 앨범 ===== -->
+  <section id="album-section">
+    <h2 class="section-title">📸 찰칵찰칵! </h2>
+    <div class="album">
+      <!-- TODO: 실제 사진 경로로 교체하세요 -->
+      <div class="card" style="--rot:-6deg; top:0px; left:2%;">
+        <div class="ribbon r"></div>
+        <img src="1.png" alt="사진1">
+        <p class="caption">임하랑</p>
+      </div>
+
+      <div class="card" style="--rot:5deg; top:90px; left:33%;">
+        <div class="ribbon b"></div>
+        <img src="2.png" alt="사진2">
+        <p class="caption">공란 </p>
+      </div>
+
+      <div class="card" style="--rot:-3deg; top:20px; left:64%;">
+        <div class="ribbon r"></div>
+        <img src="3.png" alt="사진3">
+        <p class="caption">우결했어요</p>
+      </div>
+
+      <!-- 클릭 시 링크로 이동하는 카드 -->
+      <a class="card" href="https://www.youtube.com/channel/UCA9BBfUQNTCg7zpKyZ5z9tA" target="_blank" style="--rot:8deg; top:300px; left:12%;">
+        <div class="ribbon b"></div>
+        <img src="4.png" alt="사진4">
+        <p class="caption"> 하랑이 유튜브 보러가기 →</p>
+      </a>
+
+      <a class="card" href="https://chzzk.naver.com/e5e69b29ff0056bd23caee179fcd9a03" target="_blank" style="--rot:-8deg; top:320px; left:55%;">
+        <div class="ribbon r"></div>
+        <img src="5.png" alt="사진5">
+        <p class="caption"> 하랑이 치지직 보러가기 →</p>
+      </a>
     </div>
+  </section>
 
-    <div class="countdown-box">
-
-        <h2>🎂 Countdown to Syusyu Day 🎂</h2>
-
-        <div id="countdown">
-            loading...
-        </div>
-
+  <!-- ===== 방명록 ===== -->
+  <section id="guestbook">
+    <h2 class="section-title">💌 방명록</h2>
+    <div class="guestbook-wrap">
+      <div class="guestbook-write">
+        <h3>편지 쓰기</h3>
+        <input type="text" id="gb-name" placeholder="이름" maxlength="20">
+        <textarea id="gb-msg" placeholder="하랑이에게 축하 메시지를 남겨주세요!" maxlength="300"></textarea>
+        <button id="gb-submit">편지 남기기 💌</button>
+      </div>
+      <div class="guestbook-list" id="gb-list">
+        <p class="empty">불러오는 중...</p>
+      </div>
     </div>
+  </section>
 
-    <!-- 사진 -->
+  <!-- ===== 푸터 ===== -->
+  <footer>
+    <p>Made with 💖 for HARANG</p>
+    <button class="admin-btn" id="admin-toggle">🔒 관리자</button>
+  </footer>
 
-    <div class="gallery">
+  <!-- ===== Firebase (compat SDK) ===== -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-        <div class="card">
-            <img src="1.jpeg">
-        </div>
+  <script>
+    /* ============================================
+       🎈 TODO 1: 생일 날짜를 여기서 수정하세요
+       ============================================ */
+    const targetDate = new Date('2026-09-13T00:00:00'); // YYYY-MM-DDTHH:mm:ss
 
-        <div class="card">
-            <img src="2.jpeg">
-        </div>
+    function updateCountdown(){
+      const now = new Date();
+      const diff = targetDate - now;
+      const titleEl = document.getElementById('countdown-title');
+      const numsEl  = document.getElementById('countdown-numbers');
 
-        <div class="card">
-            <img src="3.jpeg">
-        </div>
-
-        <div class="card">
-            <img src="4.jpeg">
-        </div>
-
-        <div class="card">
-            <img src="5.jpeg">
-        </div>
-
-    </div>
-
-    <!-- 비밀번호 -->
-
-    <div class="password-box">
-
-        <h2>🎀 Secret Birthday Archive 🎀</h2>
-
-        <p>
-            비밀번호를 입력하면<br>
-            편지가 열려요 ✨
-        </p>
-
-        <input
-            type="password"
-            id="passwordInput"
-            placeholder="password..."
-        >
-
-        <br>
-
-        <button onclick="checkPassword()">
-            열기
-        </button>
-
-    </div>
-
-    <!-- 편지 -->
-
-    <div id="lockedContent" style="display:none;">
-
-        <div class="letter">
-
-            슈슈언니! 생일 정말 축하해 🎂<br>
-            언니와 함께한 시간들이 내게 소중한 추억이 되었어<br>
-            앞으로도 우리 이쁜 추억 많이 만들자 🤍<br>
-            언제나 웃는 하루가 가득하길 바라 🥰<br><br>
-
-            - 웅니를 사랑하는 웅오가 -
-
-        </div>
-
-    </div>
-
-    <!-- 방명록 -->
-
-    <div class="guestbook">
-
-        <h2>💌 Birthday Letters 💌</h2>
-
-        <div class="guestbook-container">
-
-            <div class="input-area">
-
-                <textarea
-                    id="messageInput"
-                    placeholder="🎀 여러분도 편지를 남길 수 있어요 🎀"
-                ></textarea>
-
-                <button onclick="addMessage()">
-                    편지 남기기
-                </button>
-
-            </div>
-
-            <div class="messages-area">
-
-                <div id="messageList"></div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="footer">
-        ✧ made for syusyu with love ✧
-    </div>
-
-</div>
-
-<script type="module">
-
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyAyYL2YTdiiYSpQWh06GOOtudCU6c7fVuY",
-  authDomain: "syusyu-birthday.firebaseapp.com",
-  databaseURL: "https://syusyu-birthday-default-rtdb.firebaseio.com",
-  projectId: "syusyu-birthday",
-  storageBucket: "syusyu-birthday.firebasestorage.app",
-  messagingSenderId: "100415996978",
-  appId: "1:100415996978:web:9df17fd8fafacac1dbe82b",
-  measurementId: "G-FQE85JF84G"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-
-let isAdmin = false;
-
-/* 카운트다운 */
-
-function updateCountdown(){
-
-    const targetDate =
-        new Date("2026-11-16T00:00:00");
-
-    const now =
-        new Date();
-
-    const diff =
-        targetDate - now;
-
-    if(diff <= 0){
-
-        document.getElementById("countdown")
-            .innerHTML =
-            "🎉 HAPPY BIRTHDAY SYUSYU 🎉";
-
+      if(diff <= 0){
+        titleEl.textContent = 'HAPPY BIRTHDAY HARANG 🎉';
+        titleEl.classList.add('celebrate');
+        numsEl.style.display = 'none';
         return;
+      }
+      const d = Math.floor(diff / (1000*60*60*24));
+      const h = Math.floor((diff / (1000*60*60)) % 24);
+      const m = Math.floor((diff / (1000*60)) % 60);
+      const s = Math.floor((diff / 1000) % 60);
+
+      document.getElementById('cd-day').textContent  = String(d).padStart(2,'0');
+      document.getElementById('cd-hour').textContent = String(h).padStart(2,'0');
+      document.getElementById('cd-min').textContent  = String(m).padStart(2,'0');
+      document.getElementById('cd-sec').textContent  = String(s).padStart(2,'0');
     }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
 
-    const days =
-        Math.floor(diff / (1000 * 60 * 60 * 24));
+    /* ============================================
+       🔥 TODO 2: 본인의 Firebase 프로젝트 설정으로 교체하세요
+       (Firebase 콘솔 > 프로젝트 설정 > 일반 > 내 앱 > SDK 설정)
+       ============================================ */
 
-    const hours =
-        Math.floor((diff / (1000 * 60 * 60)) % 24);
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const gbRef = db.ref('guestbook');
 
-    const minutes =
-        Math.floor((diff / (1000 * 60)) % 60);
+    let latestData = null;
+    let isAdmin = false;
 
-    const seconds =
-        Math.floor((diff / 1000) % 60);
+    /* TODO 3: 관리자 비밀번호를 원하는 값으로 변경하세요 (보안이 중요하면 서버 검증 방식 권장) */
+    const ADMIN_PASSWORD = 'harang1234';
 
-    document.getElementById("countdown")
-        .innerHTML =
-        `${days}d ${hours}h ${minutes}m ${seconds}s`;
-}
+    function render(){
+      const listEl = document.getElementById('gb-list');
+      listEl.innerHTML = '';
 
-setInterval(updateCountdown, 1000);
+      if(!latestData){
+        listEl.innerHTML = '<p class="empty">첫 번째 편지를 남겨주세요! 💌</p>';
+        return;
+      }
 
-updateCountdown();
+      const entries = Object.entries(latestData)
+        .sort((a,b) => (b[1].time || 0) - (a[1].time || 0));
 
-/* 비밀번호 */
+      entries.forEach(([key, val]) => {
+        const card = document.createElement('div');
+        card.className = 'letter-card';
 
-window.checkPassword = function(){
+        const nameEl = document.createElement('strong');
+        nameEl.textContent = val.name || '익명';
 
-    const password =
-        document.getElementById("passwordInput").value;
+        const msgEl = document.createElement('p');
+        msgEl.textContent = val.msg || '';
 
-    const lockedContent =
-        document.getElementById("lockedContent");
+        const dateEl = document.createElement('span');
+        dateEl.className = 'letter-date';
+        dateEl.textContent = val.time ? new Date(val.time).toLocaleString() : '';
 
-    if(password === "syusyu1116"){
+        card.appendChild(nameEl);
+        card.appendChild(msgEl);
+        card.appendChild(dateEl);
 
-        lockedContent.style.display = "block";
-
-        document.querySelector(".password-box")
-            .style.display = "none";
-    }
-
-    else if(password === "admin1116"){
-
-        isAdmin = true;
-
-        lockedContent.style.display = "block";
-
-        document.querySelector(".password-box")
-            .style.display = "none";
-
-        alert("관리자 모드 🎀");
-    }
-
-    else{
-
-        alert("비밀번호가 틀렸어요 🎀");
-    }
-}
-
-/* 편지 불러오기 */
-
-function loadMessages(){
-
-    const messageList =
-      document.getElementById("messageList");
-
-    const messagesRef =
-      ref(db, "messages");
-
-    onValue(messagesRef, (snapshot) => {
-
-        messageList.innerHTML = "";
-
-        const data = snapshot.val();
-
-        if(data){
-
-            Object.entries(data)
-            .reverse()
-            .forEach(([key, msg]) => {
-
-                const newMessage =
-                  document.createElement("div");
-
-                newMessage.className =
-                  "message-box";
-
-                newMessage.innerHTML =
-                  `💗 ${msg.text}`;
-
-                if(isAdmin){
-
-                    const deleteBtn =
-                      document.createElement("button");
-
-                    deleteBtn.innerText =
-                      "삭제";
-
-                    deleteBtn.onclick = () => {
-
-                        remove(
-                          ref(db, "messages/" + key)
-                        );
-                    };
-
-                    newMessage.appendChild(deleteBtn);
-                }
-
-                messageList.appendChild(newMessage);
-
-            });
-
+        if(isAdmin){
+          const delBtn = document.createElement('button');
+          delBtn.className = 'del-btn';
+          delBtn.textContent = '삭제';
+          delBtn.onclick = () => {
+            if(confirm('이 편지를 삭제하시겠습니까?')){
+              gbRef.child(key).remove();
+            }
+          };
+          card.appendChild(delBtn);
         }
 
-    });
-
-}
-
-/* 편지 저장 */
-
-window.addMessage = function(){
-
-    const input =
-      document.getElementById("messageInput");
-
-    if(input.value.trim() === ""){
-
-        alert("편지를 입력해주세요 🎀");
-
-        return;
+        listEl.appendChild(card);
+      });
     }
 
-    push(
-      ref(db, "messages"),
-      {
-        text: input.value,
-        time: Date.now()
+    gbRef.on('value', snap => {
+      latestData = snap.val();
+      render();
+    });
+
+    document.getElementById('gb-submit').addEventListener('click', () => {
+      const nameInput = document.getElementById('gb-name');
+      const msgInput  = document.getElementById('gb-msg');
+      const name = nameInput.value.trim();
+      const msg  = msgInput.value.trim();
+
+      if(!name || !msg){
+        alert('이름과 메시지를 모두 입력해주세요!');
+        return;
       }
-    );
 
-    input.value = "";
-}
+      gbRef.push({ name, msg, time: Date.now() });
+      nameInput.value = '';
+      msgInput.value = '';
+    });
 
-loadMessages();
+    document.getElementById('admin-toggle').addEventListener('click', () => {
+      if(isAdmin){
+        isAdmin = false;
+        alert('관리자 모드가 해제되었습니다.');
+        render();
+        return;
+      }
+      const pw = prompt('관리자 비밀번호를 입력하세요');
+      if(pw === ADMIN_PASSWORD){
+        isAdmin = true;
+        alert('관리자 모드가 활성화되었습니다. 삭제 버튼이 표시됩니다.');
+        render();
+      } else if(pw !== null){
+        alert('비밀번호가 올바르지 않습니다.');
+      }
+    });
+  </script>
+    <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
 
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyBqG5BbHMopByNg8zl6kv9T9w6auQD_IjE",
+    authDomain: "haranghbd.firebaseapp.com",
+    projectId: "haranghbd",
+    storageBucket: "haranghbd.firebasestorage.app",
+    messagingSenderId: "310123098006",
+    appId: "1:310123098006:web:74b2f03dde273fe95177b7",
+    measurementId: "G-1PPQT65KFM"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
 </script>
 
 </body>
