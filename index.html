@@ -364,6 +364,47 @@
   box-shadow:0 0 0 3px #fff, 0 3px 0 rgba(0,0,0,.3);
   transform:scale(1.1);
 }
+  .letter-card.pinned{
+  border: 2px solid var(--red, #e74c3c);
+  background: #fff8f8;
+  position: relative;
+}
+
+.pin-badge{
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  background: var(--red, #e74c3c);
+  color: #fff;
+  font-size: .7rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.pin-btn{
+  margin-right: 6px;
+  padding: 4px 10px;
+  font-size: .75rem;
+  border: 1px solid var(--red, #e74c3c);
+  background: #fff;
+  color: var(--red, #e74c3c);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.pin-btn:hover{
+  background: var(--red, #e74c3c);
+  color: #fff;
+}
+
+.gb-link{
+  color: var(--red, #e74c3c);
+  text-decoration: underline;
+  word-break: break-all;
+}
+.gb-link:hover{
+  opacity: .7;
+}
 </style>
 </head>
 <body>
@@ -495,6 +536,7 @@
   <footer>
     <p>Made by unro👽(Naeh🐱)</p>
     <button class="admin-btn" id="admin-toggle">🔒 관리자</button>
+    <button onclick="checkAdmin()" style="font-size:.7rem; opacity:.5;">관리자</button>
   </footer>
 
   <!-- ===== Firebase (compat SDK) ===== -->
@@ -506,7 +548,6 @@
      🎈 생일 날짜
      ============================================ */
   const targetDate = new Date('2026-09-13T00:00:00');
-
   function updateCountdown(){
     const now = new Date();
     const diff = targetDate - now;
@@ -531,9 +572,7 @@
   setInterval(updateCountdown, 1000);
 
   /* ============================================
-     🔥 Firebase 설정 (compat 방식으로 통일)
-     ⚠️ databaseURL을 꼭 확인하세요!
-     Firebase 콘솔 > Realtime Database 에서 생성 후 나오는 URL을 넣어야 합니다.
+     🔥 Firebase 설정
      ============================================ */
   const firebaseConfig = {
     apiKey: "AIzaSyBqG5BbHMopByNg8zl6kv9T9w6auQD_IjE",
@@ -544,15 +583,33 @@
     appId: "1:310123098006:web:74b2f03dde273fe95177b7",
     measurementId: "G-1PPQT65KFM"
   };
-  
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
   const gbRef = db.ref('guestbook');
-
   let latestData = null;
   let isAdmin = false;
   const ADMIN_PASSWORD = 'imhr0913';
 
+  /* ============================================
+     🔗 링크 자동 변환 + XSS 방지
+     ============================================ */
+  function escapeHTML(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function linkify(text){
+    const safe = escapeHTML(text);
+    const urlPattern = /(https?:\/\/[^\s]+)/g;
+    return safe.replace(urlPattern, url => {
+      return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="gb-link">${url}</a>`;
+    });
+  }
+
+  /* ============================================
+     📋 방명록 렌더링
+     ============================================ */
   function render(){
     const listEl = document.getElementById('gb-list');
     listEl.innerHTML = '';
@@ -560,22 +617,49 @@
       listEl.innerHTML = '<p class="empty">첫 번째 편지를 남겨주세요! 💌</p>';
       return;
     }
+
     const entries = Object.entries(latestData)
-      .sort((a,b) => (b[1].time || 0) - (a[1].time || 0));
+      .sort((a,b) => {
+        const pinnedA = a[1].pinned ? 1 : 0;
+        const pinnedB = b[1].pinned ? 1 : 0;
+        if(pinnedA !== pinnedB) return pinnedB - pinnedA; // 고정된 것 먼저
+        return (b[1].time || 0) - (a[1].time || 0); // 최신순
+      });
+
     entries.forEach(([key, val]) => {
       const card = document.createElement('div');
-      card.className = 'letter-card';
+      card.className = 'letter-card' + (val.pinned ? ' pinned' : '');
+
+      if(val.pinned){
+        const pinBadge = document.createElement('span');
+        pinBadge.className = 'pin-badge';
+        pinBadge.textContent = '📌 고정';
+        card.appendChild(pinBadge);
+      }
+
       const nameEl = document.createElement('strong');
       nameEl.textContent = val.name || '익명';
+
       const msgEl = document.createElement('p');
-      msgEl.textContent = val.msg || '';
+      msgEl.innerHTML = linkify(val.msg || '');
+
       const dateEl = document.createElement('span');
       dateEl.className = 'letter-date';
       dateEl.textContent = val.time ? new Date(val.time).toLocaleString() : '';
+
       card.appendChild(nameEl);
       card.appendChild(msgEl);
       card.appendChild(dateEl);
+
       if(isAdmin){
+        const pinBtn = document.createElement('button');
+        pinBtn.className = 'pin-btn';
+        pinBtn.textContent = val.pinned ? '고정 해제' : '고정하기';
+        pinBtn.onclick = () => {
+          gbRef.child(key).update({ pinned: !val.pinned });
+        };
+        card.appendChild(pinBtn);
+
         const delBtn = document.createElement('button');
         delBtn.className = 'del-btn';
         delBtn.textContent = '삭제';
@@ -586,6 +670,7 @@
         };
         card.appendChild(delBtn);
       }
+
       listEl.appendChild(card);
     });
   }
@@ -604,7 +689,7 @@
       alert('이름과 메시지를 모두 입력해주세요!');
       return;
     }
-    gbRef.push({ name, msg, time: Date.now() });
+    gbRef.push({ name, msg, time: Date.now(), pinned: false });
     nameInput.value = '';
     msgInput.value = '';
   });
@@ -619,30 +704,27 @@
     const pw = prompt('관리자 비밀번호를 입력하세요');
     if(pw === ADMIN_PASSWORD){
       isAdmin = true;
-      alert('관리자 모드가 활성화되었습니다. 삭제 버튼이 표시됩니다.');
+      alert('관리자 모드가 활성화되었습니다. 고정/삭제 버튼이 표시됩니다.');
       render();
     } else if(pw !== null){
       alert('비밀번호가 올바르지 않습니다.');
     }
   });
-    /* ============================================
+
+  /* ============================================
      ⏳ 로딩 화면 (5초)
      ============================================ */
   (function(){
     const loadingScreen = document.getElementById('loading-screen');
     const loadingBar = document.getElementById('loading-bar');
     const loadingPercent = document.getElementById('loading-percent');
-
-    const duration = 5000; // 5초
+    const duration = 5000;
     const startTime = Date.now();
-
     function tick(){
       const elapsed = Date.now() - startTime;
       const percent = Math.min(100, Math.floor((elapsed / duration) * 100));
-
       loadingBar.style.width = percent + '%';
       loadingPercent.textContent = `LOADING... ${percent}%`;
-
       if(elapsed < duration){
         requestAnimationFrame(tick);
       } else {
@@ -654,44 +736,40 @@
         }, 200);
       }
     }
-
-    document.body.style.overflow = 'hidden'; // 로딩 중 스크롤 방지
+    document.body.style.overflow = 'hidden';
     tick();
   })();
+
   /* ============================================
-   🎵 A/B 버튼 음악 컨트롤
-   ============================================ */
-(function(){
-  const bgm = document.getElementById('bgm');
-  bgm.volume = 0.25;
-  const playButtons = document.querySelectorAll('[data-action="play"]');
-  const pauseButtons = document.querySelectorAll('[data-action="pause"]');
-
-  function setActiveState(playing){
-    playButtons.forEach(btn => btn.classList.toggle('active', playing));
-    pauseButtons.forEach(btn => btn.classList.toggle('active', !playing));
-  }
-
-  function playMusic(){
-    bgm.play().then(() => {
-      setActiveState(true);
-    }).catch(err => {
-      console.log('재생 실패:', err);
+     🎵 A/B 버튼 음악 컨트롤
+     ============================================ */
+  (function(){
+    const bgm = document.getElementById('bgm');
+    bgm.volume = 0.25;
+    const playButtons = document.querySelectorAll('[data-action="play"]');
+    const pauseButtons = document.querySelectorAll('[data-action="pause"]');
+    function setActiveState(playing){
+      playButtons.forEach(btn => btn.classList.toggle('active', playing));
+      pauseButtons.forEach(btn => btn.classList.toggle('active', !playing));
+    }
+    function playMusic(){
+      bgm.play().then(() => {
+        setActiveState(true);
+      }).catch(err => {
+        console.log('재생 실패:', err);
+      });
+    }
+    function pauseMusic(){
+      bgm.pause();
+      setActiveState(false);
+    }
+    playButtons.forEach(btn => {
+      btn.addEventListener('click', playMusic);
     });
-  }
-
-  function pauseMusic(){
-    bgm.pause();
-    setActiveState(false);
-  }
-
-  playButtons.forEach(btn => {
-    btn.addEventListener('click', playMusic);
-  });
-  pauseButtons.forEach(btn => {
-    btn.addEventListener('click', pauseMusic);
-  });
-})();
+    pauseButtons.forEach(btn => {
+      btn.addEventListener('click', pauseMusic);
+    });
+  })();
 </script>
 
 </body>
