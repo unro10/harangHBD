@@ -75,30 +75,95 @@
     padding-top:10px;
   }
 
-  /* ===== 2. 카운트다운 ===== */
-  #countdown-section{ padding:40px 20px 60px; text-align:center; }
-  .countdown-numbers{
-    display:flex; justify-content:center; align-items:center;
-    gap:10px; flex-wrap:wrap;
-  }
+ /* ===== 2. 카운트다운 ===== */
+#countdown-section{ padding:40px 20px 60px; text-align:center; }
+.countdown-numbers{
+  display:flex; justify-content:center; align-items:center;
+  gap:10px; flex-wrap:wrap;
+}
+.cd-box{
+  background:#111; border-radius:10px; padding:16px 14px;
+  min-width:80px; text-align:center;
+}
+.cd-box.red{ border:3px solid var(--red); box-shadow:0 0 18px rgba(255,77,77,.4); }
+.cd-box.blue{ border:3px solid var(--blue); box-shadow:0 0 18px rgba(67,97,238,.4); }
+.cd-box span{
+  display:block; font-family:'Press Start 2P'; font-size:1.8rem; color:#fff;
+}
+.cd-box label{
+  display:block; margin-top:6px; font-size:.65rem; color:#aaa; letter-spacing:1px;
+}
+.cd-sep{ font-family:'Press Start 2P'; font-size:1.6rem; color:var(--dark); }
+#countdown-title.celebrate{
+  color:var(--red); animation:pulse 1s infinite; font-size:1.5rem;
+}
+@keyframes pulse{ 50%{ transform:scale(1.08); } }
+
+/* ===== 태블릿 (768px 이하) ===== */
+@media(max-width:768px){
   .cd-box{
-    background:#111; border-radius:10px; padding:16px 14px;
-    min-width:80px; text-align:center;
+    min-width:70px;
+    padding:14px 12px;
   }
-  .cd-box.red{ border:3px solid var(--red); box-shadow:0 0 18px rgba(255,77,77,.4); }
-  .cd-box.blue{ border:3px solid var(--blue); box-shadow:0 0 18px rgba(67,97,238,.4); }
   .cd-box span{
-    display:block; font-family:'Press Start 2P'; font-size:1.8rem; color:#fff;
+    font-size:1.5rem;
   }
   .cd-box label{
-    display:block; margin-top:6px; font-size:.65rem; color:#aaa; letter-spacing:1px;
+    font-size:.6rem;
   }
-  .cd-sep{ font-family:'Press Start 2P'; font-size:1.6rem; color:var(--dark); }
+  .cd-sep{
+    font-size:1.3rem;
+    margin:0 4px;
+  }
+}
 
-  #countdown-title.celebrate{
-    color:var(--red); animation:pulse 1s infinite; font-size:1.5rem;
+/* ===== 모바일 (600px 이하) ===== */
+@media(max-width:600px){
+  .cd-box{
+    min-width:60px;
+    padding:12px 10px;
   }
-  @keyframes pulse{ 50%{ transform:scale(1.08); } }
+  .cd-box span{
+    font-size:1.2rem;
+  }
+  .cd-box label{
+    font-size:.55rem;
+    margin-top:4px;
+  }
+  .cd-sep{
+    font-size:1rem;
+    margin:0 2px;
+  }
+  #countdown-title.celebrate{
+    font-size:1.1rem;
+  }
+}
+
+/* ===== 소형 모바일 (480px 이하) ===== */
+@media(max-width:480px){
+  #countdown-section{
+    padding:30px 15px 50px;
+  }
+  .countdown-numbers{
+    gap:6px;
+  }
+  .cd-box{
+    min-width:50px;
+    padding:10px 8px;
+  }
+  .cd-box span{
+    font-size:1rem;
+  }
+  .cd-box label{
+    font-size:.5rem;
+    margin-top:3px;
+    letter-spacing:.5px;
+  }
+  .cd-sep{
+    font-size:.9rem;
+    margin:0 1px;
+  }
+}
 
   /* ===== 3. 앨범(엽서 느낌) ===== */
   #album-section{ padding:40px 20px 100px; }
