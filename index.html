@@ -374,6 +374,8 @@
   <div id="loading-screen">
     <div class="loading-content">
 
+      <p class="loading-blink">빨간버튼으로 노래를 재생해주세요!</p>
+
       <!-- 폴라로이드 사진 3장 -->
       <div class="loading-polaroids">
         <div class="polaroid p1">
@@ -661,6 +663,7 @@
    ============================================ */
 (function(){
   const bgm = document.getElementById('bgm');
+  bgm.volume = 0.5;   // 🔊 볼륨 50% 고정
   const playButtons = document.querySelectorAll('[data-action="play"]');
   const pauseButtons = document.querySelectorAll('[data-action="pause"]');
 
