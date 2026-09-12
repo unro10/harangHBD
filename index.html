@@ -538,6 +538,35 @@
 .guestbook-list {
   position: relative;
 }
+  @keyframes confettiFall {
+  to {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+@keyframes confettiSwing {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(30px); }
+}
+
+.celebration-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 77, 77, 0.1);
+  z-index: 999;
+  pointer-events: none;
+}
+
+.confetti {
+  position: fixed;
+  z-index: 998;
+  pointer-events: none;
+}
+
+.confetti.circle {
+  border-radius: 50%;
+}
 </style>
 </head>
 <body>
@@ -684,55 +713,41 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
- /* ============================================
+/* ============================================
    🎈 생일 날짜
    ============================================ */
 const targetDate = new Date('2026-09-13T00:00:00');
-let confettiTriggered = false; // 폭죽 발동 여부
+let confettiTriggered = false;
+let isAdmin = false; // ← 이 줄을 여기로 이동
 
 function triggerConfetti() {
-  // 축제 배경 생성
-  const backdrop = document.createElement('div');
-  backdrop.className = 'celebration-backdrop';
-  document.body.appendChild(backdrop);
-  
-  setTimeout(() => backdrop.remove(), 1000);
-
-  // 폭죽 생성
   const confettiCount = 100;
   for (let i = 0; i < confettiCount; i++) {
     const confetti = document.createElement('div');
     confetti.className = 'confetti' + (Math.random() > 0.5 ? ' circle' : '');
     
-    // 랜덤 색상
     const colors = ['#ff4d4d', '#4361ee', '#ffd700', '#ff69b4', '#00ff00'];
     confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-    
-    // 랜덤 시작 위치
     confetti.style.left = Math.random() * 100 + '%';
     confetti.style.top = '-10px';
     
-    // 랜덤 크기
     const size = Math.random() * 8 + 4;
     confetti.style.width = size + 'px';
     confetti.style.height = size + 'px';
     
-    // 애니메이션 지속시간 (2~4초)
     const duration = Math.random() * 2 + 2;
     confetti.style.animation = `confettiFall ${duration}s linear forwards, confettiSwing ${duration * 0.5}s ease-in-out infinite`;
     
     document.body.appendChild(confetti);
-    
-    // 애니메이션 완료 후 제거
     setTimeout(() => confetti.remove(), duration * 1000);
   }
-  
+} // ← 여기를 닫음
+
 function checkLockStatus(){
   const now = new Date();
   const gbList = document.getElementById('gb-list');
   const lockOverlay = document.getElementById('lock-overlay');
   
-  // 관리자 또는 생일이 지났으면 잠금 해제
   if(isAdmin || now >= targetDate){
     gbList.classList.remove('locked');
     if(lockOverlay){
@@ -752,28 +767,25 @@ function updateCountdown(){
   const titleEl = document.getElementById('countdown-title');
   const numsEl  = document.getElementById('countdown-numbers');
   
-  // 생일이 되었을 때 (처음 한 번)
   if(diff <= 0 && !confettiTriggered){
     confettiTriggered = true;
     titleEl.textContent = '🎉 HAPPY BIRTHDAY HARANG 🎉';
     titleEl.classList.add('celebrate');
     numsEl.style.display = 'none';
     triggerConfetti();
-    checkLockStatus(); // 잠금 해제 및 방명록 렌더링
+    checkLockStatus();
     render();
     return;
   }
   
-  // 이미 생일이 지났을 때
   if(diff <= 0){
     titleEl.textContent = '🎉 HAPPY BIRTHDAY HARANG 🎉';
     titleEl.classList.add('celebrate');
     numsEl.style.display = 'none';
-    checkLockStatus(); // 생일 후 접속 시에도 계속 체크
+    checkLockStatus();
     return;
   }
   
-  // 생일 전: 카운트다운 표시
   const d = Math.floor(diff / (1000*60*60*24));
   const h = Math.floor((diff / (1000*60*60)) % 24);
   const m = Math.floor((diff / (1000*60)) % 60);
@@ -788,7 +800,6 @@ function updateCountdown(){
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
-// 페이지 로드 시 이미 생일이 지났다면 폭죽 발동
 window.addEventListener('load', () => {
   const now = new Date();
   if(now >= targetDate && !confettiTriggered){
@@ -796,83 +807,62 @@ window.addEventListener('load', () => {
     triggerConfetti();
   }
 });
-  /* ============================================
-     🔥 Firebase 설정
-     ============================================ */
-  const firebaseConfig = {
-    apiKey: "AIzaSyBqG5BbHMopByNg8zl6kv9T9w6auQD_IjE",
-    authDomain: "haranghbd.firebaseapp.com",
-    projectId: "haranghbd",
-    storageBucket: "haranghbd.firebasestorage.app",
-    messagingSenderId: "310123098006",
-    appId: "1:310123098006:web:74b2f03dde273fe95177b7",
-    measurementId: "G-1PPQT65KFM"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-  const gbRef = db.ref('guestbook');
-  let latestData = null;
-  let isAdmin = false;
-  const ADMIN_PASSWORD = 'imhr0913';
 
-  /* ============================================
-     🔗 링크 자동 변환 + XSS 방지
-     ============================================ */
-  function escapeHTML(str){
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  }
+/* ============================================
+   🔥 Firebase 설정
+   ============================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyBqG5BbHMopByNg8zl6kv9T9w6auQD_IjE",
+  authDomain: "haranghbd.firebaseapp.com",
+  projectId: "haranghbd",
+  storageBucket: "haranghbd.firebasestorage.app",
+  messagingSenderId: "310123098006",
+  appId: "1:310123098006:web:74b2f03dde273fe95177b7",
+  measurementId: "G-1PPQT65KFM"
+};
 
-  function linkify(text){
-    const safe = escapeHTML(text);
-    const urlPattern = /(https?:\/\/[^\s]+)/g;
-    return safe.replace(urlPattern, url => {
-      return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="gb-link">${url}</a>`;
-    });
-  }
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const gbRef = db.ref('guestbook');
+let latestData = null;
+
+const ADMIN_PASSWORD = 'imhr0913';
+
+/* ============================================
+   🔗 링크 자동 변환 + XSS 방지
+   ============================================ */
+function escapeHTML(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function linkify(text){
+  const safe = escapeHTML(text);
+  const urlPattern = /(https?:\/\/[^\s]+)/g;
+  return safe.replace(urlPattern, url => {
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="gb-link">${url}</a>`;
+  });
+}
 
 /* ============================================
    📋 방명록 렌더링
    ============================================ */
-function checkLockStatus(){
-  const now = new Date();
-  const gbList = document.getElementById('gb-list');
-  const lockOverlay = document.getElementById('lock-overlay');
-  
-  // 관리자 또는 생일이 지났으면 잠금 해제
-  if(isAdmin || now >= targetDate){
-    gbList.classList.remove('locked');
-    if(lockOverlay){
-      lockOverlay.classList.add('hidden');
-    }
-  } else {
-    gbList.classList.add('locked');
-    if(lockOverlay){
-      lockOverlay.classList.remove('hidden');
-    }
-  }
-}
-
 function render(){
   const listEl = document.getElementById('gb-list');
   const now = new Date();
   
-  // 잠금 상태 체크
   checkLockStatus();
   
-  // 잠금 상태일 때는 내용 렌더링 스킵
   if(!isAdmin && now < targetDate){
     return;
   }
   
-  // lock-overlay 찾아서 제거 (콘텐츠 공간 확보)
   const lockOverlay = listEl.querySelector('.lock-overlay');
   if(lockOverlay && (isAdmin || now >= targetDate)){
     lockOverlay.remove();
   }
   
-  // 기존 empty 메시지 제거
   const emptyMsg = listEl.querySelector('.empty');
   if(emptyMsg) emptyMsg.remove();
   
@@ -888,8 +878,8 @@ function render(){
     .sort((a,b) => {
       const pinnedA = a[1].pinned ? 1 : 0;
       const pinnedB = b[1].pinned ? 1 : 0;
-      if(pinnedA !== pinnedB) return pinnedB - pinnedA; // 고정된 것 먼저
-      return (b[1].time || 0) - (a[1].time || 0); // 최신순
+      if(pinnedA !== pinnedB) return pinnedB - pinnedA;
+      return (b[1].time || 0) - (a[1].time || 0);
     });
   
   entries.forEach(([key, val]) => {
@@ -905,10 +895,8 @@ function render(){
     
     const nameEl = document.createElement('strong');
     nameEl.textContent = val.name || '익명';
-    
     const msgEl = document.createElement('p');
     msgEl.innerHTML = linkify(val.msg || '');
-    
     const dateEl = document.createElement('span');
     dateEl.className = 'letter-date';
     dateEl.textContent = val.time ? new Date(val.time).toLocaleString() : '';
@@ -966,7 +954,7 @@ document.getElementById('admin-toggle').addEventListener('click', () => {
   if(isAdmin){
     isAdmin = false;
     alert('관리자 모드가 해제되었습니다.');
-    checkLockStatus(); // 잠금 상태 다시 확인
+    checkLockStatus();
     render();
     return;
   }
@@ -975,71 +963,81 @@ document.getElementById('admin-toggle').addEventListener('click', () => {
   if(pw === ADMIN_PASSWORD){
     isAdmin = true;
     alert('관리자 모드가 활성화되었습니다. 편지를 열람할 수 있습니다.');
-    checkLockStatus(); // 잠금 해제
+    checkLockStatus();
     render();
   } else if(pw !== null){
     alert('비밀번호가 올바르지 않습니다.');
   }
 });
-  /* ============================================
-     ⏳ 로딩 화면 (5초)
-     ============================================ */
-  (function(){
-    const loadingScreen = document.getElementById('loading-screen');
-    const loadingBar = document.getElementById('loading-bar');
-    const loadingPercent = document.getElementById('loading-percent');
-    const duration = 5000;
-    const startTime = Date.now();
-    function tick(){
-      const elapsed = Date.now() - startTime;
-      const percent = Math.min(100, Math.floor((elapsed / duration) * 100));
-      loadingBar.style.width = percent + '%';
-      loadingPercent.textContent = `LOADING... ${percent}%`;
-      if(elapsed < duration){
-        requestAnimationFrame(tick);
-      } else {
-        loadingBar.style.width = '100%';
-        loadingPercent.textContent = 'LOADING... 100%';
-        setTimeout(() => {
-          loadingScreen.classList.add('hide');
-          document.body.style.overflow = 'auto';
-        }, 200);
-      }
-    }
-    document.body.style.overflow = 'hidden';
-    tick();
-  })();
 
-  /* ============================================
-     🎵 A/B 버튼 음악 컨트롤
-     ============================================ */
-  (function(){
-    const bgm = document.getElementById('bgm');
-    bgm.volume = 0.25;
-    const playButtons = document.querySelectorAll('[data-action="play"]');
-    const pauseButtons = document.querySelectorAll('[data-action="pause"]');
-    function setActiveState(playing){
-      playButtons.forEach(btn => btn.classList.toggle('active', playing));
-      pauseButtons.forEach(btn => btn.classList.toggle('active', !playing));
+/* ============================================
+   ⏳ 로딩 화면 (5초)
+   ============================================ */
+(function(){
+  const loadingScreen = document.getElementById('loading-screen');
+  const loadingBar = document.getElementById('loading-bar');
+  const loadingPercent = document.getElementById('loading-percent');
+  const duration = 5000;
+  const startTime = Date.now();
+  
+  function tick(){
+    const elapsed = Date.now() - startTime;
+    const percent = Math.min(100, Math.floor((elapsed / duration) * 100));
+    loadingBar.style.width = percent + '%';
+    loadingPercent.textContent = `LOADING... ${percent}%`;
+    
+    if(elapsed < duration){
+      requestAnimationFrame(tick);
+    } else {
+      loadingBar.style.width = '100%';
+      loadingPercent.textContent = 'LOADING... 100%';
+      setTimeout(() => {
+        loadingScreen.classList.add('hide');
+        document.body.style.overflow = 'auto';
+      }, 200);
     }
-    function playMusic(){
-      bgm.play().then(() => {
-        setActiveState(true);
-      }).catch(err => {
-        console.log('재생 실패:', err);
-      });
-    }
-    function pauseMusic(){
-      bgm.pause();
-      setActiveState(false);
-    }
-    playButtons.forEach(btn => {
-      btn.addEventListener('click', playMusic);
+  }
+  
+  document.body.style.overflow = 'hidden';
+  tick();
+})();
+
+/* ============================================
+   🎵 A/B 버튼 음악 컨트롤
+   ============================================ */
+(function(){
+  const bgm = document.getElementById('bgm');
+  bgm.volume = 0.25;
+  
+  const playButtons = document.querySelectorAll('[data-action="play"]');
+  const pauseButtons = document.querySelectorAll('[data-action="pause"]');
+  
+  function setActiveState(playing){
+    playButtons.forEach(btn => btn.classList.toggle('active', playing));
+    pauseButtons.forEach(btn => btn.classList.toggle('active', !playing));
+  }
+  
+  function playMusic(){
+    bgm.play().then(() => {
+      setActiveState(true);
+    }).catch(err => {
+      console.log('재생 실패:', err);
     });
-    pauseButtons.forEach(btn => {
-      btn.addEventListener('click', pauseMusic);
-    });
-  })();
+  }
+  
+  function pauseMusic(){
+    bgm.pause();
+    setActiveState(false);
+  }
+  
+  playButtons.forEach(btn => {
+    btn.addEventListener('click', playMusic);
+  });
+  
+  pauseButtons.forEach(btn => {
+    btn.addEventListener('click', pauseMusic);
+  });
+})();
 </script>
 
 </body>
