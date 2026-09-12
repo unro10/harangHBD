@@ -21,7 +21,6 @@
     overflow-x:hidden;
     position:relative;
   }
-
   /* ===== 1. 떠오르는 배경 장식 ===== */
   .floating-decorations{
     position:fixed; inset:0; overflow:hidden; z-index:0; pointer-events:none;
@@ -38,12 +37,10 @@
     90%{ opacity:.25; }
     100%{ transform:translateY(-130vh) rotate(360deg); opacity:0; }
   }
-
   section, header, footer{
     position:relative; z-index:1;
     background:rgba(255,255,255,0.92);
   }
-
   /* ===== 헤더 ===== */
   header{ text-align:center; padding:70px 20px 40px; }
   .console-buttons{ margin-bottom:20px; }
@@ -54,7 +51,6 @@
   }
   .btn-a{ background:var(--red); }
   .btn-b{ background:var(--blue); }
-
   h1{
     font-family:'Press Start 2P', sans-serif;
     font-size:2rem;
@@ -68,14 +64,12 @@
     animation:blink 1.2s step-end infinite;
   }
   @keyframes blink{ 50%{ opacity:0; } }
-
   .section-title{
     text-align:center; font-family:'Press Start 2P';
     font-size:1.2rem; color:var(--dark); margin-bottom:30px;
     padding-top:10px;
   }
-
- /* ===== 2. 카운트다운 ===== */
+/* ===== 2. 카운트다운 ===== */
 #countdown-section{ padding:40px 20px 60px; text-align:center; }
 .countdown-numbers{
   display:flex; justify-content:center; align-items:center;
@@ -98,7 +92,6 @@
   color:var(--red); animation:pulse 1s infinite; font-size:1.5rem;
 }
 @keyframes pulse{ 50%{ transform:scale(1.08); } }
-
 /* ===== 태블릿 (768px 이하) ===== */
 @media(max-width:768px){
   .cd-box{
@@ -116,7 +109,6 @@
     margin:0 4px;
   }
 }
-
 /* ===== 모바일 (600px 이하) ===== */
 @media(max-width:600px){
   .cd-box{
@@ -138,7 +130,6 @@
     font-size:1.1rem;
   }
 }
-
 /* ===== 소형 모바일 (480px 이하) ===== */
 @media(max-width:480px){
   #countdown-section{
@@ -164,7 +155,6 @@
     margin:0 1px;
   }
 }
-
   /* ===== 3. 앨범(엽서 느낌) ===== */
   #album-section{ padding:40px 20px 100px; }
   .album{
@@ -195,7 +185,6 @@
   }
   .ribbon.r{ background:var(--red); }
   .ribbon.b{ background:var(--blue); }
-
   /* ===== 4. 방명록 ===== */
   #guestbook{ padding:40px 20px 100px; }
   .guestbook-wrap{
@@ -218,8 +207,10 @@
     cursor:pointer; transition:background .2s;
   }
   .guestbook-write button:hover{ background:var(--red); }
-
-  .guestbook-list{ max-height:520px; overflow-y:auto; }
+  .guestbook-list{
+    max-height:520px; overflow-y:auto;
+    position:relative; min-height:200px;
+  }
   .letter-card{
     background:#fff; border-radius:10px; padding:14px 16px; margin-bottom:12px;
     border-left:5px solid var(--red); box-shadow:0 3px 8px rgba(0,0,0,.06);
@@ -234,29 +225,37 @@
     border:none; border-radius:6px; padding:4px 8px; font-size:.7rem; cursor:pointer;
   }
   .empty{ text-align:center; color:#aaa; padding:40px 0; }
-
+  /* ===== 방명록 잠금 오버레이 ===== */
+  .lock-overlay{
+    position:absolute; inset:0;
+    background:rgba(255,255,255,.95);
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap:10px;
+    text-align:center; border-radius:12px;
+    z-index:5;
+  }
+  .lock-overlay.hidden{ display:none; }
+  .lock-overlay .lock-icon{ font-size:2.5rem; }
+  .lock-overlay p{ font-weight:700; color:var(--gray); font-size:.95rem; }
+  .guestbook-list.locked{ overflow:hidden; }
   /* ===== 푸터 ===== */
   footer{ text-align:center; padding:30px; color:#999; font-size:.8rem; }
   .admin-btn{
     margin-top:10px; background:none; border:1px solid #ccc; border-radius:6px;
     padding:4px 10px; cursor:pointer; font-size:.8rem; color:#999;
   }
-
   /* ===== 5. 반응형 (900px 이하) ===== */
   @media(max-width:900px){
     h1{ font-size:1.3rem; }
     .subtitle{ font-size:.65rem; }
     .section-title{ font-size:1rem; }
-
     .cd-box{ min-width:60px; padding:12px 8px; }
     .cd-box span{ font-size:1.3rem; }
-
     .album{ position:relative; height:auto; display:flex; flex-direction:column; align-items:center; gap:40px; }
     .card{
       position:relative !important; top:auto !important; left:auto !important;
       width:70%; max-width:250px;
     }
-
     .guestbook-wrap{ flex-direction:column; }
   }
     /* ===== 로딩 화면 ===== */
@@ -269,7 +268,6 @@
   #loading-screen.hide{
     opacity:0; visibility:hidden; pointer-events:none;
   }
-
   .loading-content{
     text-align:center;
     animation:loadingFloat 2s ease-in-out infinite;
@@ -278,7 +276,6 @@
     0%,100%{ transform:translateY(0); }
     50%{ transform:translateY(-8px); }
   }
-
   /* --- 폴라로이드 사진 --- */
   .loading-polaroids{
     position:relative;
@@ -288,7 +285,6 @@
     justify-content:center;
     align-items:flex-end;
   }
-
   .polaroid{
     position:absolute;
     width:90px;
@@ -307,7 +303,6 @@
     display:block;
     border:1px solid #eee;
   }
-
   .polaroid.p1{
     left:50%;
     margin-left:-95px;
@@ -330,7 +325,6 @@
     animation-delay:.9s;
     --final-rot:14deg;
   }
-
   @keyframes polaroidPop{
     0%{
       opacity:0;
@@ -345,7 +339,6 @@
       transform:scale(1) rotate(var(--final-rot)) translateY(0);
     }
   }
-
   /* --- A/B 버튼 --- */
   .loading-console{ margin-bottom:24px; }
   .loading-btn{
@@ -360,7 +353,6 @@
     0%,100%{ transform:scale(1); }
     50%{ transform:scale(1.2); }
   }
-
   /* --- 타이틀 --- */
   .loading-title{
     font-family:'Press Start 2P';
@@ -368,7 +360,6 @@
     line-height:1.8; margin-bottom:30px;
     text-shadow:3px 3px 0 var(--red);
   }
-
   /* --- 로딩 바 --- */
   .loading-bar-wrap{
     width:280px; max-width:70vw; height:20px;
@@ -395,17 +386,14 @@
     0%{ background-position:0 0; }
     100%{ background-position:32px 0; }
   }
-
   .loading-text{
     font-family:'Press Start 2P'; font-size:.7rem;
     color:#fff; margin-bottom:20px;
   }
-
   .loading-blink{
     font-family:'Press Start 2P'; font-size:.65rem;
     color:#aaa; animation:blink 1s step-end infinite;
   }
-
   /* --- 반응형 --- */
   @media(max-width:900px){
     .loading-title{ font-size:1rem; }
@@ -434,7 +422,6 @@
   background: #fff8f8;
   position: relative;
 }
-
 .pin-badge{
   position: absolute;
   top: -10px;
@@ -446,7 +433,6 @@
   border-radius: 10px;
   font-weight: bold;
 }
-
 .pin-btn{
   margin-right: 6px;
   padding: 4px 10px;
@@ -461,7 +447,6 @@
   background: var(--red, #e74c3c);
   color: #fff;
 }
-
 .gb-link{
   color: var(--red, #e74c3c);
   text-decoration: underline;
@@ -470,19 +455,14 @@
 .gb-link:hover{
   opacity: .7;
 }
-
 </style>
 </head>
 <body>
-  <body>
     <audio id="bgm" src="HBD.mp3" loop></audio>
-
   <!-- ===== 로딩 화면 ===== -->
   <div id="loading-screen">
     <div class="loading-content">
-
       <h3 class="loading-blink">👇빨간버튼으로 노래를 재생해주세요👇</h3>
-
       <!-- 폴라로이드 사진 3장 -->
       <div class="loading-polaroids">
         <div class="polaroid p1">
@@ -495,7 +475,6 @@
           <img src="8.png" alt="폴라로이드3">
         </div>
       </div>
-
   <div class="loading-console">
     <span class="loading-btn a music-btn" id="loading-btn-a" data-action="play">▶️</span>
     <span class="loading-btn b music-btn" id="loading-btn-b" data-action="pause">⏸️</span>
@@ -508,7 +487,6 @@
       <p class="loading-blink">Wait...</p>
     </div>
   </div>
-
   <!-- ===== 떠오르는 배경 장식 ===== -->
   <div class="floating-decorations" aria-hidden="true">
     <span style="left:5%;  font-size:2.2rem; animation-duration:18s; animation-delay:0s;">🎮</span>
@@ -520,7 +498,6 @@
     <span style="left:88%; font-size:2rem;   animation-duration:23s; animation-delay:6s;">⭐️</span>
     <span style="left:10%; font-size:1.7rem; animation-duration:21s; animation-delay:8s;">🕹️</span>
   </div>
-
   <!-- ===== 헤더 ===== -->
   <header>
     <div class="console-buttons">
@@ -529,7 +506,6 @@
     </div>
     <h1>🎮 HAPPY BIRTHDAY HARANG 🎮</h1>
   </header>
-
   <!-- ===== 카운트다운 ===== -->
   <section id="countdown-section">
     <h2 id="countdown-title" class="section-title">⏰ 하랑이 생일까지</h2>
@@ -543,37 +519,30 @@
       <div class="cd-box blue"><span id="cd-sec">00</span><label>SEC</label></div>
     </div>
   </section>
-
   <!-- ===== 사진 앨범 ===== -->
   <section id="album-section">
     <h2 class="section-title">📸</h2>
     <div class="album">
-      <!-- TODO: 실제 사진 경로로 교체하세요 -->
       <div class="card" style="--rot:-6deg; top:0px; left:2%;">
         <div class="ribbon r"></div>
         <img src="1.png" alt="사진1">
         <p class="caption">하랑이🐯</p>
       </div>
-
       <div class="card" style="--rot:5deg; top:90px; left:33%;">
         <div class="ribbon b"></div>
         <img src="2.png" alt="사진2">
         <p class="caption">익명님이 보내주셨습니다</p>
       </div>
-
       <div class="card" style="--rot:-3deg; top:20px; left:64%;">
         <div class="ribbon r"></div>
         <img src="3.png" alt="사진3">
         <p class="caption">우결했어요</p>
       </div>
-
-      <!-- 클릭 시 링크로 이동하는 카드 -->
       <a class="card" href="https://www.youtube.com/channel/UCA9BBfUQNTCg7zpKyZ5z9tA" target="_blank" style="--rot:8deg; top:300px; left:12%;">
         <div class="ribbon b"></div>
         <img src="4.png" alt="사진4">
         <p class="caption"> 하랑이 유튜브 보러가기→</p>
       </a>
-
       <a class="card" href="https://chzzk.naver.com/e5e69b29ff0056bd23caee179fcd9a03" target="_blank" style="--rot:-8deg; top:320px; left:55%;">
         <div class="ribbon r"></div>
         <img src="5.png" alt="사진5">
@@ -581,130 +550,62 @@
       </a>
     </div>
   </section>
-
   <!-- ===== 방명록 ===== -->
-<!-- ===== 방명록 ===== -->
-<section id="guestbook">
-  <h2 class="section-title">💌</h2>
-  <div class="guestbook-wrap">
-    <div class="guestbook-write">
-      <h3>편지 쓰기</h3>
-      <input type="text" id="gb-name" placeholder="이름" maxlength="20">
-      <textarea id="gb-msg" placeholder="하랑이에게 축하 메시지를 남겨주세요!" maxlength="2000"></textarea>
-      <button id="gb-submit">편지 남기기 💌</button>
+  <section id="guestbook">
+    <h2 class="section-title">💌</h2>
+    <div class="guestbook-wrap">
+      <div class="guestbook-write">
+        <h3>편지 쓰기</h3>
+        <input type="text" id="gb-name" placeholder="이름" maxlength="20">
+        <textarea id="gb-msg" placeholder="하랑이에게 축하 메시지를 남겨주세요!" maxlength="2000"></textarea>
+        <button id="gb-submit">편지 남기기 💌</button>
+      </div>
+      <!-- ✅ 복원된 방명록 리스트 컨테이너 -->
+      <div class="guestbook-list" id="gb-list">
+        <div id="lock-overlay" class="lock-overlay">
+          <span class="lock-icon">🔒</span>
+          <p>하랑이 생일 당일<br>12시에 공개됩니다!</p>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
   <!-- ===== 푸터 ===== -->
   <footer>
     <p>Made by unro👽(Naeh🐱)</p>
     <button class="admin-btn" id="admin-toggle">🔒 관리자</button>
   </footer>
-
   <!-- ===== Firebase (compat SDK) ===== -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
 <script>
 /* ============================================
-   🎈 생일 날짜
+   🎈 전역 변수 (모두 최상단에 선언)
    ============================================ */
-const targetDate = new Date('2026-09-13T00:00:00');
+const targetDate = new Date('2026-09-13T00:00:00'); // 연도 확인!
 let confettiTriggered = false;
-let isAdmin = false; // ← 이 줄을 여기로 이동
+let isAdmin = false;
+let latestData = null;          // ← 여기로 이동!
+const ADMIN_PASSWORD = 'imhr0913';
 
 function checkLockStatus(){
   const now = new Date();
   const gbList = document.getElementById('gb-list');
   const lockOverlay = document.getElementById('lock-overlay');
-  
+  if(!gbList) return;
   if(isAdmin || now >= targetDate){
     gbList.classList.remove('locked');
-    if(lockOverlay){
-      lockOverlay.classList.add('hidden');
-    }
+    if(lockOverlay) lockOverlay.classList.add('hidden');
   } else {
     gbList.classList.add('locked');
-    if(lockOverlay){
-      lockOverlay.classList.remove('hidden');
-    }
+    if(lockOverlay) lockOverlay.classList.remove('hidden');
   }
 }
 
-function updateCountdown(){
-  const now = new Date();
-  const diff = targetDate - now;
-  const titleEl = document.getElementById('countdown-title');
-  const numsEl  = document.getElementById('countdown-numbers');
-  
-  if(diff <= 0 && !confettiTriggered){
-    confettiTriggered = true;
-    titleEl.textContent = '🎉 HAPPY BIRTHDAY HARANG 🎉';
-    titleEl.classList.add('celebrate');
-    numsEl.style.display = 'none';
-    checkLockStatus();
-    render();
-    return;
-  }
-  
-  if(diff <= 0){
-    titleEl.textContent = '🎉 HAPPY BIRTHDAY HARANG 🎉';
-    titleEl.classList.add('celebrate');
-    numsEl.style.display = 'none';
-    checkLockStatus();
-    return;
-  }
-  
-  const d = Math.floor(diff / (1000*60*60*24));
-  const h = Math.floor((diff / (1000*60*60)) % 24);
-  const m = Math.floor((diff / (1000*60)) % 60);
-  const s = Math.floor((diff / 1000) % 60);
-  
-  document.getElementById('cd-day').textContent  = String(d).padStart(2,'0');
-  document.getElementById('cd-hour').textContent = String(h).padStart(2,'0');
-  document.getElementById('cd-min').textContent  = String(m).padStart(2,'0');
-  document.getElementById('cd-sec').textContent  = String(s).padStart(2,'0');
-}
-
-updateCountdown();
-setInterval(updateCountdown, 1000);
-
-window.addEventListener('load', () => {
-  const now = new Date();
-  if(now >= targetDate && !confettiTriggered){
-    confettiTriggered = true;
-  }
-});
-
-/* ============================================
-   🔥 Firebase 설정
-   ============================================ */
-const firebaseConfig = {
-  apiKey: "AIzaSyBqG5BbHMopByNg8zl6kv9T9w6auQD_IjE",
-  authDomain: "haranghbd.firebaseapp.com",
-  projectId: "haranghbd",
-  storageBucket: "haranghbd.firebasestorage.app",
-  messagingSenderId: "310123098006",
-  appId: "1:310123098006:web:74b2f03dde273fe95177b7",
-  measurementId: "G-1PPQT65KFM"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-const gbRef = db.ref('guestbook');
-let latestData = null;
-
-const ADMIN_PASSWORD = 'imhr0913';
-
-/* ============================================
-   🔗 링크 자동 변환 + XSS 방지
-   ============================================ */
 function escapeHTML(str){
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
 }
-
 function linkify(text){
   const safe = escapeHTML(text);
   const urlPattern = /(https?:\/\/[^\s]+)/g;
@@ -713,27 +614,19 @@ function linkify(text){
   });
 }
 
-/* ============================================
-   📋 방명록 렌더링
-   ============================================ */
 function render(){
   const listEl = document.getElementById('gb-list');
+  if(!listEl) return;
   const now = new Date();
-  
   checkLockStatus();
-  
+
   if(!isAdmin && now < targetDate){
+    listEl.querySelectorAll('.letter-card, .empty').forEach(el => el.remove());
     return;
   }
-  
-  const lockOverlay = listEl.querySelector('.lock-overlay');
-  if(lockOverlay && (isAdmin || now >= targetDate)){
-    lockOverlay.remove();
-  }
-  
-  const emptyMsg = listEl.querySelector('.empty');
-  if(emptyMsg) emptyMsg.remove();
-  
+
+  listEl.querySelectorAll('.letter-card, .empty').forEach(el => el.remove());
+
   if(!latestData){
     const emptyEl = document.createElement('p');
     emptyEl.className = 'empty';
@@ -741,7 +634,7 @@ function render(){
     listEl.appendChild(emptyEl);
     return;
   }
-  
+
   const entries = Object.entries(latestData)
     .sort((a,b) => {
       const pinnedA = a[1].pinned ? 1 : 0;
@@ -749,30 +642,32 @@ function render(){
       if(pinnedA !== pinnedB) return pinnedB - pinnedA;
       return (b[1].time || 0) - (a[1].time || 0);
     });
-  
+
   entries.forEach(([key, val]) => {
     const card = document.createElement('div');
     card.className = 'letter-card' + (val.pinned ? ' pinned' : '');
-    
+
     if(val.pinned){
       const pinBadge = document.createElement('span');
       pinBadge.className = 'pin-badge';
       pinBadge.textContent = '📌 고정';
       card.appendChild(pinBadge);
     }
-    
+
     const nameEl = document.createElement('strong');
     nameEl.textContent = val.name || '익명';
+
     const msgEl = document.createElement('p');
     msgEl.innerHTML = linkify(val.msg || '');
+
     const dateEl = document.createElement('span');
     dateEl.className = 'letter-date';
     dateEl.textContent = val.time ? new Date(val.time).toLocaleString() : '';
-    
+
     card.appendChild(nameEl);
     card.appendChild(msgEl);
     card.appendChild(dateEl);
-    
+
     if(isAdmin){
       const pinBtn = document.createElement('button');
       pinBtn.className = 'pin-btn';
@@ -781,7 +676,7 @@ function render(){
         gbRef.child(key).update({ pinned: !val.pinned });
       };
       card.appendChild(pinBtn);
-      
+
       const delBtn = document.createElement('button');
       delBtn.className = 'del-btn';
       delBtn.textContent = '삭제';
@@ -792,10 +687,71 @@ function render(){
       };
       card.appendChild(delBtn);
     }
-    
+
     listEl.appendChild(card);
   });
 }
+
+function updateCountdown(){
+  const now = new Date();
+  const diff = targetDate - now;
+  const titleEl = document.getElementById('countdown-title');
+  const numsEl  = document.getElementById('countdown-numbers');
+  if(diff <= 0 && !confettiTriggered){
+    confettiTriggered = true;
+    titleEl.textContent = '🎉 HAPPY BIRTHDAY HARANG 🎉';
+    titleEl.classList.add('celebrate');
+    numsEl.style.display = 'none';
+    checkLockStatus();
+    render();
+    return;
+  }
+  if(diff <= 0){
+    titleEl.textContent = '🎉 HAPPY BIRTHDAY HARANG 🎉';
+    titleEl.classList.add('celebrate');
+    numsEl.style.display = 'none';
+    checkLockStatus();
+    return;
+  }
+  const d = Math.floor(diff / (1000*60*60*24));
+  const h = Math.floor((diff / (1000*60*60)) % 24);
+  const m = Math.floor((diff / (1000*60)) % 60);
+  const s = Math.floor((diff / 1000) % 60);
+  document.getElementById('cd-day').textContent  = String(d).padStart(2,'0');
+  document.getElementById('cd-hour').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-min').textContent  = String(m).padStart(2,'0');
+  document.getElementById('cd-sec').textContent  = String(s).padStart(2,'0');
+}
+
+/* ============================================
+   🔥 Firebase 설정 (여기서 gbRef 선언)
+   ============================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyBqG5BbHMopByNg8zl6kv9T9w6auQD_IjE",
+  authDomain: "haranghbd.firebaseapp.com",
+  projectId: "haranghbd",
+  storageBucket: "haranghbd.firebasestorage.app",
+  messagingSenderId: "310123098006",
+  appId: "1:310123098006:web:74b2f03dde273fe95177b7",
+  measurementId: "G-1PPQT65KFM"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const gbRef = db.ref('guestbook');
+
+/* ============================================
+   ▶️ 실행 시작 (모든 함수/변수 선언 이후에 호출)
+   ============================================ */
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+window.addEventListener('load', () => {
+  const now = new Date();
+  if(now >= targetDate && !confettiTriggered){
+    confettiTriggered = true;
+  }
+  checkLockStatus();
+});
 
 gbRef.on('value', snap => {
   latestData = snap.val();
@@ -807,12 +763,10 @@ document.getElementById('gb-submit').addEventListener('click', () => {
   const msgInput  = document.getElementById('gb-msg');
   const name = nameInput.value.trim();
   const msg  = msgInput.value.trim();
-  
   if(!name || !msg){
     alert('이름과 메시지를 모두 입력해주세요!');
     return;
   }
-  
   gbRef.push({ name, msg, time: Date.now(), pinned: false });
   nameInput.value = '';
   msgInput.value = '';
@@ -826,7 +780,6 @@ document.getElementById('admin-toggle').addEventListener('click', () => {
     render();
     return;
   }
-  
   const pw = prompt('관리자 비밀번호를 입력하세요');
   if(pw === ADMIN_PASSWORD){
     isAdmin = true;
@@ -847,13 +800,11 @@ document.getElementById('admin-toggle').addEventListener('click', () => {
   const loadingPercent = document.getElementById('loading-percent');
   const duration = 5000;
   const startTime = Date.now();
-  
   function tick(){
     const elapsed = Date.now() - startTime;
     const percent = Math.min(100, Math.floor((elapsed / duration) * 100));
     loadingBar.style.width = percent + '%';
     loadingPercent.textContent = `LOADING... ${percent}%`;
-    
     if(elapsed < duration){
       requestAnimationFrame(tick);
     } else {
@@ -865,7 +816,6 @@ document.getElementById('admin-toggle').addEventListener('click', () => {
       }, 200);
     }
   }
-  
   document.body.style.overflow = 'hidden';
   tick();
 })();
@@ -876,15 +826,12 @@ document.getElementById('admin-toggle').addEventListener('click', () => {
 (function(){
   const bgm = document.getElementById('bgm');
   bgm.volume = 0.25;
-  
   const playButtons = document.querySelectorAll('[data-action="play"]');
   const pauseButtons = document.querySelectorAll('[data-action="pause"]');
-  
   function setActiveState(playing){
     playButtons.forEach(btn => btn.classList.toggle('active', playing));
     pauseButtons.forEach(btn => btn.classList.toggle('active', !playing));
   }
-  
   function playMusic(){
     bgm.play().then(() => {
       setActiveState(true);
@@ -892,21 +839,17 @@ document.getElementById('admin-toggle').addEventListener('click', () => {
       console.log('재생 실패:', err);
     });
   }
-  
   function pauseMusic(){
     bgm.pause();
     setActiveState(false);
   }
-  
   playButtons.forEach(btn => {
     btn.addEventListener('click', playMusic);
   });
-  
   pauseButtons.forEach(btn => {
     btn.addEventListener('click', pauseMusic);
   });
 })();
 </script>
-
 </body>
 </html>
