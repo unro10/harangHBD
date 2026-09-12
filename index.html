@@ -470,6 +470,74 @@
 .gb-link:hover{
   opacity: .7;
 }
+  /* ===== 방명록 - 잠금 상태 ===== */
+.guestbook-list.locked {
+  position: relative;
+  filter: blur(8px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.guestbook-list.locked::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lock-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 11;
+  gap: 15px;
+}
+
+.lock-overlay.hidden {
+  display: none;
+}
+
+.lock-icon {
+  font-size: 3rem;
+  animation: lockBounce 1s ease-in-out infinite;
+}
+
+@keyframes lockBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.lock-text {
+  font-family: 'Press Start 2P';
+  font-size: 0.9rem;
+  color: var(--dark);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.unlock-date {
+  font-family: 'Press Start 2P';
+  font-size: 0.75rem;
+  color: var(--red);
+  background: #ffe0e0;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 2px solid var(--red);
+}
+
+.guestbook-list {
+  position: relative;
+}
 </style>
 </head>
 <body>
@@ -582,21 +650,29 @@
   </section>
 
   <!-- ===== 방명록 ===== -->
-  <section id="guestbook">
-    <h2 class="section-title">💌</h2>
-    <div class="guestbook-wrap">
-      <div class="guestbook-write">
-        <h3>편지 쓰기</h3>
-        <input type="text" id="gb-name" placeholder="이름" maxlength="20">
-        <textarea id="gb-msg" placeholder="하랑이에게 축하 메시지를 남겨주세요!" maxlength="2000"></textarea>
-        <button id="gb-submit">편지 남기기 💌</button>
-      </div>
-      <div class="guestbook-list" id="gb-list">
-        <p class="empty">불러오는 중...</p>
-      </div>
+<!-- ===== 방명록 ===== -->
+<section id="guestbook">
+  <h2 class="section-title">💌</h2>
+  <div class="guestbook-wrap">
+    <div class="guestbook-write">
+      <h3>편지 쓰기</h3>
+      <input type="text" id="gb-name" placeholder="이름" maxlength="20">
+      <textarea id="gb-msg" placeholder="하랑이에게 축하 메시지를 남겨주세요!" maxlength="2000"></textarea>
+      <button id="gb-submit">편지 남기기 💌</button>
     </div>
-  </section>
-
+    <div class="guestbook-list locked" id="gb-list">
+      <div class="lock-overlay" id="lock-overlay">
+        <div class="lock-icon">🔒</div>
+        <div class="lock-text">
+          생일이 될 때까지<br>
+          편지를 볼 수 없습니다
+        </div>
+        <div class="unlock-date" id="unlock-date">2026.09.13</div>
+      </div>
+      <p class="empty">불러오는 중...</p>
+    </div>
+  </div>
+</section>
   <!-- ===== 푸터 ===== -->
   <footer>
     <p>Made by unro👽(Naeh🐱)</p>
@@ -608,33 +684,118 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-  /* ============================================
-     🎈 생일 날짜
-     ============================================ */
-  const targetDate = new Date('2026-09-13T00:00:00');
-  function updateCountdown(){
-    const now = new Date();
-    const diff = targetDate - now;
-    const titleEl = document.getElementById('countdown-title');
-    const numsEl  = document.getElementById('countdown-numbers');
-    if(diff <= 0){
-      titleEl.textContent = 'HAPPY BIRTHDAY HARANG 🎉';
-      titleEl.classList.add('celebrate');
-      numsEl.style.display = 'none';
-      return;
-    }
-    const d = Math.floor(diff / (1000*60*60*24));
-    const h = Math.floor((diff / (1000*60*60)) % 24);
-    const m = Math.floor((diff / (1000*60)) % 60);
-    const s = Math.floor((diff / 1000) % 60);
-    document.getElementById('cd-day').textContent  = String(d).padStart(2,'0');
-    document.getElementById('cd-hour').textContent = String(h).padStart(2,'0');
-    document.getElementById('cd-min').textContent  = String(m).padStart(2,'0');
-    document.getElementById('cd-sec').textContent  = String(s).padStart(2,'0');
-  }
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
+ /* ============================================
+   🎈 생일 날짜
+   ============================================ */
+const targetDate = new Date('2026-09-13T00:00:00');
+let confettiTriggered = false; // 폭죽 발동 여부
 
+function triggerConfetti() {
+  // 축제 배경 생성
+  const backdrop = document.createElement('div');
+  backdrop.className = 'celebration-backdrop';
+  document.body.appendChild(backdrop);
+  
+  setTimeout(() => backdrop.remove(), 1000);
+
+  // 폭죽 생성
+  const confettiCount = 100;
+  for (let i = 0; i < confettiCount; i++) {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti' + (Math.random() > 0.5 ? ' circle' : '');
+    
+    // 랜덤 색상
+    const colors = ['#ff4d4d', '#4361ee', '#ffd700', '#ff69b4', '#00ff00'];
+    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+    
+    // 랜덤 시작 위치
+    confetti.style.left = Math.random() * 100 + '%';
+    confetti.style.top = '-10px';
+    
+    // 랜덤 크기
+    const size = Math.random() * 8 + 4;
+    confetti.style.width = size + 'px';
+    confetti.style.height = size + 'px';
+    
+    // 애니메이션 지속시간 (2~4초)
+    const duration = Math.random() * 2 + 2;
+    confetti.style.animation = `confettiFall ${duration}s linear forwards, confettiSwing ${duration * 0.5}s ease-in-out infinite`;
+    
+    document.body.appendChild(confetti);
+    
+    // 애니메이션 완료 후 제거
+    setTimeout(() => confetti.remove(), duration * 1000);
+  }
+  
+function checkLockStatus(){
+  const now = new Date();
+  const gbList = document.getElementById('gb-list');
+  const lockOverlay = document.getElementById('lock-overlay');
+  
+  // 관리자 또는 생일이 지났으면 잠금 해제
+  if(isAdmin || now >= targetDate){
+    gbList.classList.remove('locked');
+    if(lockOverlay){
+      lockOverlay.classList.add('hidden');
+    }
+  } else {
+    gbList.classList.add('locked');
+    if(lockOverlay){
+      lockOverlay.classList.remove('hidden');
+    }
+  }
+}
+
+function updateCountdown(){
+  const now = new Date();
+  const diff = targetDate - now;
+  const titleEl = document.getElementById('countdown-title');
+  const numsEl  = document.getElementById('countdown-numbers');
+  
+  // 생일이 되었을 때 (처음 한 번)
+  if(diff <= 0 && !confettiTriggered){
+    confettiTriggered = true;
+    titleEl.textContent = '🎉 HAPPY BIRTHDAY HARANG 🎉';
+    titleEl.classList.add('celebrate');
+    numsEl.style.display = 'none';
+    triggerConfetti();
+    checkLockStatus(); // 잠금 해제 및 방명록 렌더링
+    render();
+    return;
+  }
+  
+  // 이미 생일이 지났을 때
+  if(diff <= 0){
+    titleEl.textContent = '🎉 HAPPY BIRTHDAY HARANG 🎉';
+    titleEl.classList.add('celebrate');
+    numsEl.style.display = 'none';
+    checkLockStatus(); // 생일 후 접속 시에도 계속 체크
+    return;
+  }
+  
+  // 생일 전: 카운트다운 표시
+  const d = Math.floor(diff / (1000*60*60*24));
+  const h = Math.floor((diff / (1000*60*60)) % 24);
+  const m = Math.floor((diff / (1000*60)) % 60);
+  const s = Math.floor((diff / 1000) % 60);
+  
+  document.getElementById('cd-day').textContent  = String(d).padStart(2,'0');
+  document.getElementById('cd-hour').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-min').textContent  = String(m).padStart(2,'0');
+  document.getElementById('cd-sec').textContent  = String(s).padStart(2,'0');
+}
+
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// 페이지 로드 시 이미 생일이 지났다면 폭죽 발동
+window.addEventListener('load', () => {
+  const now = new Date();
+  if(now >= targetDate && !confettiTriggered){
+    confettiTriggered = true;
+    triggerConfetti();
+  }
+});
   /* ============================================
      🔥 Firebase 설정
      ============================================ */
@@ -671,110 +832,155 @@
     });
   }
 
-  /* ============================================
-     📋 방명록 렌더링
-     ============================================ */
-  function render(){
-    const listEl = document.getElementById('gb-list');
-    listEl.innerHTML = '';
-    if(!latestData){
-      listEl.innerHTML = '<p class="empty">첫 번째 편지를 남겨주세요! 💌</p>';
-      return;
+/* ============================================
+   📋 방명록 렌더링
+   ============================================ */
+function checkLockStatus(){
+  const now = new Date();
+  const gbList = document.getElementById('gb-list');
+  const lockOverlay = document.getElementById('lock-overlay');
+  
+  // 관리자 또는 생일이 지났으면 잠금 해제
+  if(isAdmin || now >= targetDate){
+    gbList.classList.remove('locked');
+    if(lockOverlay){
+      lockOverlay.classList.add('hidden');
     }
-
-    const entries = Object.entries(latestData)
-      .sort((a,b) => {
-        const pinnedA = a[1].pinned ? 1 : 0;
-        const pinnedB = b[1].pinned ? 1 : 0;
-        if(pinnedA !== pinnedB) return pinnedB - pinnedA; // 고정된 것 먼저
-        return (b[1].time || 0) - (a[1].time || 0); // 최신순
-      });
-
-    entries.forEach(([key, val]) => {
-      const card = document.createElement('div');
-      card.className = 'letter-card' + (val.pinned ? ' pinned' : '');
-
-      if(val.pinned){
-        const pinBadge = document.createElement('span');
-        pinBadge.className = 'pin-badge';
-        pinBadge.textContent = '📌 고정';
-        card.appendChild(pinBadge);
-      }
-
-      const nameEl = document.createElement('strong');
-      nameEl.textContent = val.name || '익명';
-
-      const msgEl = document.createElement('p');
-      msgEl.innerHTML = linkify(val.msg || '');
-
-      const dateEl = document.createElement('span');
-      dateEl.className = 'letter-date';
-      dateEl.textContent = val.time ? new Date(val.time).toLocaleString() : '';
-
-      card.appendChild(nameEl);
-      card.appendChild(msgEl);
-      card.appendChild(dateEl);
-
-      if(isAdmin){
-        const pinBtn = document.createElement('button');
-        pinBtn.className = 'pin-btn';
-        pinBtn.textContent = val.pinned ? '고정 해제' : '고정하기';
-        pinBtn.onclick = () => {
-          gbRef.child(key).update({ pinned: !val.pinned });
-        };
-        card.appendChild(pinBtn);
-
-        const delBtn = document.createElement('button');
-        delBtn.className = 'del-btn';
-        delBtn.textContent = '삭제';
-        delBtn.onclick = () => {
-          if(confirm('이 편지를 삭제하시겠습니까?')){
-            gbRef.child(key).remove();
-          }
-        };
-        card.appendChild(delBtn);
-      }
-
-      listEl.appendChild(card);
-    });
+  } else {
+    gbList.classList.add('locked');
+    if(lockOverlay){
+      lockOverlay.classList.remove('hidden');
+    }
   }
+}
 
-  gbRef.on('value', snap => {
-    latestData = snap.val();
-    render();
-  });
-
-  document.getElementById('gb-submit').addEventListener('click', () => {
-    const nameInput = document.getElementById('gb-name');
-    const msgInput  = document.getElementById('gb-msg');
-    const name = nameInput.value.trim();
-    const msg  = msgInput.value.trim();
-    if(!name || !msg){
-      alert('이름과 메시지를 모두 입력해주세요!');
-      return;
+function render(){
+  const listEl = document.getElementById('gb-list');
+  const now = new Date();
+  
+  // 잠금 상태 체크
+  checkLockStatus();
+  
+  // 잠금 상태일 때는 내용 렌더링 스킵
+  if(!isAdmin && now < targetDate){
+    return;
+  }
+  
+  // lock-overlay 찾아서 제거 (콘텐츠 공간 확보)
+  const lockOverlay = listEl.querySelector('.lock-overlay');
+  if(lockOverlay && (isAdmin || now >= targetDate)){
+    lockOverlay.remove();
+  }
+  
+  // 기존 empty 메시지 제거
+  const emptyMsg = listEl.querySelector('.empty');
+  if(emptyMsg) emptyMsg.remove();
+  
+  if(!latestData){
+    const emptyEl = document.createElement('p');
+    emptyEl.className = 'empty';
+    emptyEl.textContent = '첫 번째 편지를 남겨주세요! 💌';
+    listEl.appendChild(emptyEl);
+    return;
+  }
+  
+  const entries = Object.entries(latestData)
+    .sort((a,b) => {
+      const pinnedA = a[1].pinned ? 1 : 0;
+      const pinnedB = b[1].pinned ? 1 : 0;
+      if(pinnedA !== pinnedB) return pinnedB - pinnedA; // 고정된 것 먼저
+      return (b[1].time || 0) - (a[1].time || 0); // 최신순
+    });
+  
+  entries.forEach(([key, val]) => {
+    const card = document.createElement('div');
+    card.className = 'letter-card' + (val.pinned ? ' pinned' : '');
+    
+    if(val.pinned){
+      const pinBadge = document.createElement('span');
+      pinBadge.className = 'pin-badge';
+      pinBadge.textContent = '📌 고정';
+      card.appendChild(pinBadge);
     }
-    gbRef.push({ name, msg, time: Date.now(), pinned: false });
-    nameInput.value = '';
-    msgInput.value = '';
-  });
-
-  document.getElementById('admin-toggle').addEventListener('click', () => {
+    
+    const nameEl = document.createElement('strong');
+    nameEl.textContent = val.name || '익명';
+    
+    const msgEl = document.createElement('p');
+    msgEl.innerHTML = linkify(val.msg || '');
+    
+    const dateEl = document.createElement('span');
+    dateEl.className = 'letter-date';
+    dateEl.textContent = val.time ? new Date(val.time).toLocaleString() : '';
+    
+    card.appendChild(nameEl);
+    card.appendChild(msgEl);
+    card.appendChild(dateEl);
+    
     if(isAdmin){
-      isAdmin = false;
-      alert('관리자 모드가 해제되었습니다.');
-      render();
-      return;
+      const pinBtn = document.createElement('button');
+      pinBtn.className = 'pin-btn';
+      pinBtn.textContent = val.pinned ? '고정 해제' : '고정하기';
+      pinBtn.onclick = () => {
+        gbRef.child(key).update({ pinned: !val.pinned });
+      };
+      card.appendChild(pinBtn);
+      
+      const delBtn = document.createElement('button');
+      delBtn.className = 'del-btn';
+      delBtn.textContent = '삭제';
+      delBtn.onclick = () => {
+        if(confirm('이 편지를 삭제하시겠습니까?')){
+          gbRef.child(key).remove();
+        }
+      };
+      card.appendChild(delBtn);
     }
-    const pw = prompt('관리자 비밀번호를 입력하세요');
-    if(pw === ADMIN_PASSWORD){
-      isAdmin = true;
-      alert('관리자 모드가 활성화되었습니다. 고정/삭제 버튼이 표시됩니다.');
-      render();
-    } else if(pw !== null){
-      alert('비밀번호가 올바르지 않습니다.');
-    }
+    
+    listEl.appendChild(card);
   });
+}
 
+gbRef.on('value', snap => {
+  latestData = snap.val();
+  render();
+});
+
+document.getElementById('gb-submit').addEventListener('click', () => {
+  const nameInput = document.getElementById('gb-name');
+  const msgInput  = document.getElementById('gb-msg');
+  const name = nameInput.value.trim();
+  const msg  = msgInput.value.trim();
+  
+  if(!name || !msg){
+    alert('이름과 메시지를 모두 입력해주세요!');
+    return;
+  }
+  
+  gbRef.push({ name, msg, time: Date.now(), pinned: false });
+  nameInput.value = '';
+  msgInput.value = '';
+});
+
+document.getElementById('admin-toggle').addEventListener('click', () => {
+  if(isAdmin){
+    isAdmin = false;
+    alert('관리자 모드가 해제되었습니다.');
+    checkLockStatus(); // 잠금 상태 다시 확인
+    render();
+    return;
+  }
+  
+  const pw = prompt('관리자 비밀번호를 입력하세요');
+  if(pw === ADMIN_PASSWORD){
+    isAdmin = true;
+    alert('관리자 모드가 활성화되었습니다. 편지를 열람할 수 있습니다.');
+    checkLockStatus(); // 잠금 해제
+    render();
+  } else if(pw !== null){
+    alert('비밀번호가 올바르지 않습니다.');
+  }
+});
   /* ============================================
      ⏳ 로딩 화면 (5초)
      ============================================ */
