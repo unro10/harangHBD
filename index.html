@@ -720,29 +720,6 @@ const targetDate = new Date('2026-09-13T00:00:00');
 let confettiTriggered = false;
 let isAdmin = false; // ← 이 줄을 여기로 이동
 
-function triggerConfetti() {
-  const confettiCount = 100;
-  for (let i = 0; i < confettiCount; i++) {
-    const confetti = document.createElement('div');
-    confetti.className = 'confetti' + (Math.random() > 0.5 ? ' circle' : '');
-    
-    const colors = ['#ff4d4d', '#4361ee', '#ffd700', '#ff69b4', '#00ff00'];
-    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-    confetti.style.left = Math.random() * 100 + '%';
-    confetti.style.top = '-10px';
-    
-    const size = Math.random() * 8 + 4;
-    confetti.style.width = size + 'px';
-    confetti.style.height = size + 'px';
-    
-    const duration = Math.random() * 2 + 2;
-    confetti.style.animation = `confettiFall ${duration}s linear forwards, confettiSwing ${duration * 0.5}s ease-in-out infinite`;
-    
-    document.body.appendChild(confetti);
-    setTimeout(() => confetti.remove(), duration * 1000);
-  }
-} // ← 여기를 닫음
-
 function checkLockStatus(){
   const now = new Date();
   const gbList = document.getElementById('gb-list');
@@ -772,7 +749,6 @@ function updateCountdown(){
     titleEl.textContent = '🎉 HAPPY BIRTHDAY HARANG 🎉';
     titleEl.classList.add('celebrate');
     numsEl.style.display = 'none';
-    triggerConfetti();
     checkLockStatus();
     render();
     return;
@@ -804,7 +780,6 @@ window.addEventListener('load', () => {
   const now = new Date();
   if(now >= targetDate && !confettiTriggered){
     confettiTriggered = true;
-    triggerConfetti();
   }
 });
 
