@@ -586,7 +586,6 @@ let confettiTriggered = false;
 let isAdmin = false;
 let latestData = null;          // ← 여기로 이동!
 const ADMIN_PASSWORD = 'imhr0913';
-
 function checkLockStatus(){
   const now = new Date();
   const gbList = document.getElementById('gb-list');
@@ -600,7 +599,6 @@ function checkLockStatus(){
     if(lockOverlay) lockOverlay.classList.remove('hidden');
   }
 }
-
 function escapeHTML(str){
   const div = document.createElement('div');
   div.textContent = str;
@@ -613,20 +611,16 @@ function linkify(text){
     return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="gb-link">${url}</a>`;
   });
 }
-
 function render(){
   const listEl = document.getElementById('gb-list');
   if(!listEl) return;
   const now = new Date();
   checkLockStatus();
-
   if(!isAdmin && now < targetDate){
     listEl.querySelectorAll('.letter-card, .empty').forEach(el => el.remove());
     return;
   }
-
   listEl.querySelectorAll('.letter-card, .empty').forEach(el => el.remove());
-
   if(!latestData){
     const emptyEl = document.createElement('p');
     emptyEl.className = 'empty';
@@ -634,7 +628,6 @@ function render(){
     listEl.appendChild(emptyEl);
     return;
   }
-
   const entries = Object.entries(latestData)
     .sort((a,b) => {
       const pinnedA = a[1].pinned ? 1 : 0;
@@ -642,32 +635,25 @@ function render(){
       if(pinnedA !== pinnedB) return pinnedB - pinnedA;
       return (b[1].time || 0) - (a[1].time || 0);
     });
-
   entries.forEach(([key, val]) => {
     const card = document.createElement('div');
     card.className = 'letter-card' + (val.pinned ? ' pinned' : '');
-
     if(val.pinned){
       const pinBadge = document.createElement('span');
       pinBadge.className = 'pin-badge';
       pinBadge.textContent = '📌 고정';
       card.appendChild(pinBadge);
     }
-
     const nameEl = document.createElement('strong');
     nameEl.textContent = val.name || '익명';
-
     const msgEl = document.createElement('p');
     msgEl.innerHTML = linkify(val.msg || '');
-
     const dateEl = document.createElement('span');
     dateEl.className = 'letter-date';
     dateEl.textContent = val.time ? new Date(val.time).toLocaleString() : '';
-
     card.appendChild(nameEl);
     card.appendChild(msgEl);
     card.appendChild(dateEl);
-
     if(isAdmin){
       const pinBtn = document.createElement('button');
       pinBtn.className = 'pin-btn';
@@ -676,7 +662,6 @@ function render(){
         gbRef.child(key).update({ pinned: !val.pinned });
       };
       card.appendChild(pinBtn);
-
       const delBtn = document.createElement('button');
       delBtn.className = 'del-btn';
       delBtn.textContent = '삭제';
@@ -687,32 +672,29 @@ function render(){
       };
       card.appendChild(delBtn);
     }
-
     listEl.appendChild(card);
   });
 }
 
+/* ===== ✅ 수정됨: 중복 if 블록 제거, confettiTriggered 체크 하나로 통합 ===== */
 function updateCountdown(){
   const now = new Date();
   const diff = targetDate - now;
   const titleEl = document.getElementById('countdown-title');
   const numsEl  = document.getElementById('countdown-numbers');
-  if(diff <= 0 && !confettiTriggered){
-    confettiTriggered = true;
-    titleEl.textContent = '🎉 HAPPY BIRTHDAY HARANG 🎉';
-    titleEl.classList.add('celebrate');
-    numsEl.style.display = 'none';
-    checkLockStatus();
-    render();
-    return;
-  }
+
   if(diff <= 0){
+    if(!confettiTriggered){
+      confettiTriggered = true;
+      checkLockStatus();
+      render();
+    }
     titleEl.textContent = '🎉 HAPPY BIRTHDAY HARANG 🎉';
     titleEl.classList.add('celebrate');
     numsEl.style.display = 'none';
-    checkLockStatus();
     return;
   }
+
   const d = Math.floor(diff / (1000*60*60*24));
   const h = Math.floor((diff / (1000*60*60)) % 24);
   const m = Math.floor((diff / (1000*60)) % 60);
@@ -722,7 +704,6 @@ function updateCountdown(){
   document.getElementById('cd-min').textContent  = String(m).padStart(2,'0');
   document.getElementById('cd-sec').textContent  = String(s).padStart(2,'0');
 }
-
 /* ============================================
    🔥 Firebase 설정 (여기서 gbRef 선언)
    ============================================ */
@@ -738,18 +719,14 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const gbRef = db.ref('guestbook');
-
 /* ============================================
    ▶️ 실행 시작 (모든 함수/변수 선언 이후에 호출)
    ============================================ */
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
+/* ===== ✅ 수정됨: 죽은 코드(confettiTriggered 재확인) 제거, checkLockStatus만 유지 ===== */
 window.addEventListener('load', () => {
-  const now = new Date();
-  if(now >= targetDate && !confettiTriggered){
-    confettiTriggered = true;
-  }
   checkLockStatus();
 });
 
@@ -757,7 +734,6 @@ gbRef.on('value', snap => {
   latestData = snap.val();
   render();
 });
-
 document.getElementById('gb-submit').addEventListener('click', () => {
   const nameInput = document.getElementById('gb-name');
   const msgInput  = document.getElementById('gb-msg');
@@ -771,7 +747,6 @@ document.getElementById('gb-submit').addEventListener('click', () => {
   nameInput.value = '';
   msgInput.value = '';
 });
-
 document.getElementById('admin-toggle').addEventListener('click', () => {
   if(isAdmin){
     isAdmin = false;
@@ -790,7 +765,6 @@ document.getElementById('admin-toggle').addEventListener('click', () => {
     alert('비밀번호가 올바르지 않습니다.');
   }
 });
-
 /* ============================================
    ⏳ 로딩 화면 (5초)
    ============================================ */
@@ -812,14 +786,15 @@ document.getElementById('admin-toggle').addEventListener('click', () => {
       loadingPercent.textContent = 'LOADING... 100%';
       setTimeout(() => {
         loadingScreen.classList.add('hide');
-        document.body.style.overflow = 'auto';
+        /* ===== ✅ 수정됨: overflow → overflowY (가로 스크롤 유지) ===== */
+        document.body.style.overflowY = 'auto';
       }, 200);
     }
   }
-  document.body.style.overflow = 'hidden';
+  /* ===== ✅ 수정됨: overflow → overflowY ===== */
+  document.body.style.overflowY = 'hidden';
   tick();
 })();
-
 /* ============================================
    🎵 A/B 버튼 음악 컨트롤
    ============================================ */
