@@ -470,74 +470,7 @@
 .gb-link:hover{
   opacity: .7;
 }
-  /* ===== 방명록 - 잠금 상태 ===== */
-.guestbook-list.locked {
-  position: relative;
-  filter: blur(8px);
-  pointer-events: none;
-  user-select: none;
-}
 
-.guestbook-list.locked::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 12px;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.lock-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 11;
-  gap: 15px;
-}
-
-.lock-overlay.hidden {
-  display: none;
-}
-
-.lock-icon {
-  font-size: 3rem;
-  animation: lockBounce 1s ease-in-out infinite;
-}
-
-@keyframes lockBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-.lock-text {
-  font-family: 'Press Start 2P';
-  font-size: 0.9rem;
-  color: var(--dark);
-  text-align: center;
-  line-height: 1.6;
-}
-
-.unlock-date {
-  font-family: 'Press Start 2P';
-  font-size: 0.75rem;
-  color: var(--red);
-  background: #ffe0e0;
-  padding: 8px 16px;
-  border-radius: 8px;
-  border: 2px solid var(--red);
-}
-
-.guestbook-list {
-  position: relative;
-}
 </style>
 </head>
 <body>
@@ -659,17 +592,6 @@
       <input type="text" id="gb-name" placeholder="이름" maxlength="20">
       <textarea id="gb-msg" placeholder="하랑이에게 축하 메시지를 남겨주세요!" maxlength="2000"></textarea>
       <button id="gb-submit">편지 남기기 💌</button>
-    </div>
-    <div class="guestbook-list locked" id="gb-list">
-      <div class="lock-overlay" id="lock-overlay">
-        <div class="lock-icon">🔒</div>
-        <div class="lock-text">
-          생일이 될 때까지<br>
-          편지를 볼 수 없습니다
-        </div>
-        <div class="unlock-date" id="unlock-date">2026.09.13</div>
-      </div>
-      <p class="empty">불러오는 중...</p>
     </div>
   </div>
 </section>
