@@ -538,35 +538,6 @@
 .guestbook-list {
   position: relative;
 }
-  @keyframes confettiFall {
-  to {
-    transform: translateY(100vh);
-    opacity: 0;
-  }
-}
-
-@keyframes confettiSwing {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(30px); }
-}
-
-.celebration-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(255, 77, 77, 0.1);
-  z-index: 999;
-  pointer-events: none;
-}
-
-.confetti {
-  position: fixed;
-  z-index: 998;
-  pointer-events: none;
-}
-
-.confetti.circle {
-  border-radius: 50%;
-}
 </style>
 </head>
 <body>
